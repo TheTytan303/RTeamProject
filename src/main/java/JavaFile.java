@@ -1,13 +1,12 @@
-import java.io.File;
-import java.io.FileFilter;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JavaFile {
-    String path;
-    Long size;
-    List<JavaFile> imports;
+    private String path;
+    private Long size;
+    private List<JavaFile> imports;
 
 
 
@@ -18,8 +17,20 @@ public class JavaFile {
     }
 
     //----------------------------------------------------------------------------------Getters
-    public String getContent(){
-        return null;
+    public String getContent() throws FileNotFoundException {
+        String returnVale = new String();
+        File f= new File(path);
+        BufferedReader reader = new BufferedReader(new FileReader(f));
+        try {
+            String line = reader.readLine();
+            while(line != null){
+                returnVale = returnVale.concat(line + "\n");
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnVale;
     }
     public Long getSize(){
         return this.size;
