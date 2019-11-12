@@ -1,7 +1,10 @@
 import java.math.BigInteger;
+import java.util.List;
 
-public class File {
+public class JavaFile {
     String path;
+    BigInteger size;
+
 
     //poierz ścieżkę pliku
     public String getPath(){
@@ -15,6 +18,14 @@ public class File {
 
     //pobierz rozmiar pliku
     public BigInteger getSize(){
+        return null;
+    }
+
+
+
+    public static List<JavaFile> getFilesFrom(String path){
+
+
         return null;
     }
 }
