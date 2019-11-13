@@ -20,7 +20,7 @@ public class Parser {
         if (pd.isPresent()) {
             return pd.get().getName().asString();
         } else {
-            return "";
+            return "?";
         }
     }
 
@@ -46,18 +46,18 @@ public class Parser {
     public static void parse(PackageFile pf) {
         for (JavaFile jf : pf.getJavaFiles()) {
             Set<Import> im;
+            System.out.println(String.format("PackageFile: %s", jf.getPath()));
             try {
                 im = Parser.getImports(jf);
             } catch (FileNotFoundException e) {
                 continue;
             }
-            System.out.println(String.format("PackageFile.name: %s", pf.getName()));
             for (Import i : im) {
                 System.out.println(String.format("\t%s", i));
             }
-            for (PackageFile spf : pf.getPackages()) {
-                parse(spf);
-            }
+        }
+        for (PackageFile spf : pf.getPackages()) {
+            parse(spf);
         }
     }
 
