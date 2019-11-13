@@ -23,12 +23,14 @@ public class Parser {
             Name importName = id.getName();
             String fullImport = importName.asString();
             Optional<Name> qualifier = importName.getQualifier();
-            if (qualifier.isPresent()) {
+            if (id.isAsterisk()) {
+                imports.add(new Import(fullImport));
+            } else if (qualifier.isPresent()) {
                 String fromPackage = qualifier.get().asString();
                 String importedClass = importName.removeQualifier().asString();
                 imports.add(new Import(fromPackage, importedClass));
             } else {
-                imports.add(new Import(fullImport));
+                // TODO
             }
         }
         return imports;
@@ -39,7 +41,7 @@ public class Parser {
         for (JavaFile jf : JavaFile.getFilesFrom(JavaFile.getProjectPath())) {
             Set<Import> im = Parser.getImports(jf);
             for (Import i : im) {
-                System.out.println(i);
+                System.out.println(String.format("%s |||| %s , %s", i.getImportedPackage(), i.getImportedClass(), i));
             }
         }
     }
