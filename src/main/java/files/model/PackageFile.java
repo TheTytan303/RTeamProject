@@ -1,3 +1,5 @@
+package files.model;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ public class PackageFile {
 
 
 
-    PackageFile(String path){
+    public PackageFile(String path){
         File folder = new File(path);
         this.packages = new ArrayList<>();
         this.javaFiles = new ArrayList<>();
