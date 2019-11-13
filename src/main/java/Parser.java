@@ -11,7 +11,7 @@ import java.util.*;
 
 public class Parser {
 
-    public String getPackage(JavaFile jf) throws FileNotFoundException {
+    public static String getPackage(JavaFile jf) throws FileNotFoundException {
         String content = jf.getContent();
         CompilationUnit cu = StaticJavaParser.parse(content);
         Optional<PackageDeclaration> pd = cu.getPackageDeclaration();

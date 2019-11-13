@@ -7,6 +7,7 @@ public class JavaFile implements Comparator<JavaFile> {
     private String path;
     private String pack;
     private Long size;
+    private PackageFile parent;
     private List<JavaFile> imports;
     private List<Import> imports2;
 
@@ -18,8 +19,12 @@ public class JavaFile implements Comparator<JavaFile> {
     public JavaFile(File f){
         this.path = f.getPath();
         this.size = f.length();
-        this.pack = f.getPath().replace("/",".");
-        imports2 = new ArrayList<>(Parser.getImports(this));
+        try {
+            this.pack = Parser.getPackage(this);
+            imports2 = new ArrayList<>(Parser.getImports(this));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     //----------------------------------------------------------------------------------Getters
@@ -47,22 +52,22 @@ public class JavaFile implements Comparator<JavaFile> {
     public String getPath(){
         return this.path;
     }
+    public String getName(){
+        String[] tab = this.getPath().split("/");
+        return tab[tab.length-1];
+    }
 
     //----------------------------------------------------------------------------------Setters
     public void setImports(List<JavaFile> imports) {
         this.imports = imports;
     }
 
-
     //----------------------------------------------------------------------------------Overrides
-
-
     @Override
     public int compare(JavaFile o1, JavaFile o2) {
 
         return o1.getPath().compareTo(o2.path);
     }
-
     @Override
     public String toString() {
         return "["+this.getSize()+"B]: "+this.getPath();
@@ -78,7 +83,7 @@ public class JavaFile implements Comparator<JavaFile> {
     }
     //poberz scieżkę projektu
     public static String getProjectPath(){
-        return System.getProperty("user.dir");
+        return System.getProperty("user.dir")+"\\src\\main\\java";
     }
 
     public static JavaFile toJF(String path){
@@ -101,25 +106,6 @@ public class JavaFile implements Comparator<JavaFile> {
             }else{
                 if(f.isDirectory()){
                     searchFolderFor(f ,name, list);
-                }
-            }
-        }
-    }
-
-    public static class GraphFactory{
-        List<JavaFile> readedFiles;
-        public GraphFactory(String path){
-            readedFiles = new ArrayList<>();
-            List<JavaFile> toRead = new ArrayList<>();
-            toRead.add(new JavaFile(new File(path)));
-            for(JavaFile jf: toRead){
-                readedFiles.add(jf);
-                for(Import i: jf.imports2){
-                    if(i.getImportedClass() == null){
-
-                    }else {
-
-                    }
                 }
             }
         }
