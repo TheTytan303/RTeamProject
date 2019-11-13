@@ -1,19 +1,37 @@
+package files.model;
+
+
+
+import files.service.Import;
+import files.service.Parser;
+
 import java.io.*;
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class JavaFile {
+public class JavaFile implements Comparator<JavaFile> {
     private String path;
+    private String pack;
     private Long size;
+    private PackageFile parent;
     private List<JavaFile> imports;
+    private List<Import> imports2;
 
 
 
-    public JavaFile(){}
+    public JavaFile(String path){
+        this.path = path;
+    }
     public JavaFile(File f){
         this.path = f.getPath();
-        this.size = f.getTotalSpace();
+        this.size = f.length();
+        try {
+            this.pack = Parser.getPackage(this);
+            imports2 = new ArrayList<>(Parser.getImports(this));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     //----------------------------------------------------------------------------------Getters
@@ -41,19 +59,24 @@ public class JavaFile {
     public String getPath(){
         return this.path;
     }
+    public String getName(){
+        String[] tab = this.getPath().split("/");
+        return tab[tab.length-1];
+    }
 
     //----------------------------------------------------------------------------------Setters
     public void setImports(List<JavaFile> imports) {
         this.imports = imports;
     }
 
-
     //----------------------------------------------------------------------------------Overrides
+    @Override
+    public int compare(JavaFile o1, JavaFile o2) {
 
-
+        return o1.getPath().compareTo(o2.path);
+    }
     @Override
     public String toString() {
-
         return "["+this.getSize()+"B]: "+this.getPath();
     }
 
@@ -65,10 +88,18 @@ public class JavaFile {
         searchFolderFor(file, ".java", returnVale);
         return returnVale;
     }
-
     //poberz scieżkę projektu
     public static String getProjectPath(){
-        return System.getProperty("user.dir");
+        String sep = File.separator;
+        return System.getProperty("user.dir")+sep+"src"+sep+"main"+sep+"java";
+    }
+
+    public static JavaFile toJF(String path){
+        File file = new File(path);
+        if(file.getPath().endsWith(".java")){
+            return new JavaFile(file);
+        }
+        return null;
     }
 
     private static void searchFolderFor(File folder, String name, List<JavaFile> list){

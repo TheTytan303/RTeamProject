@@ -1,19 +1,12 @@
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import files.model.JavaFile;
+import files.model.PackageFile;
 
 public class RTeam {
 
     public static void main(String[] args){
-        List<JavaFile> list = JavaFile.getFilesFrom(JavaFile.getProjectPath());
-        for(JavaFile file: list){
-            System.out.println(file);
-            try {
-                System.out.println(file.getContent());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        //List<JavaFile> list = JavaFile.getFilesFrom(JavaFile.getProjectPath());
+        PackageFile pack = new PackageFile(JavaFile.getProjectPath());
+        System.out.println(System.getProperty("java.home"));
         System.out.println("kurdebele");
     }
 }
