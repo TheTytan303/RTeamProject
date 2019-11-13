@@ -60,7 +60,7 @@ public class JavaFile implements Comparator<JavaFile> {
         return this.path;
     }
     public String getName(){
-        String[] tab = this.getPath().split("/");
+        String[] tab = this.getPath().split(File.separator);
         return tab[tab.length-1];
     }
 
