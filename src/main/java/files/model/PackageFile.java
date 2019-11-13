@@ -9,10 +9,31 @@ public class PackageFile {
     private List<JavaFile> javaFiles;
     private String name;
     private String path;
+    private PackageFile parent;
 
 
 
+    public PackageFile(String path, PackageFile parent){
+        File folder = new File(path);
+        this.parent = parent;
+        this.packages = new ArrayList<>();
+        this.javaFiles = new ArrayList<>();
+        this.path=path;
+        this.name = path.split("\\\\")[path.split("\\\\").length-1];
+        File[] searchResults = folder.listFiles(pathname -> pathname.getPath().endsWith(".java"));
+        for(File f: searchResults){
+            javaFiles.add(new JavaFile(f));
+        }
+        searchResults = folder.listFiles();
+        for(File f: searchResults){
+            if(f.isDirectory()) {
+                packages.add(new PackageFile(f.getPath(), this));
+            }
+        }
+
+    }
     public PackageFile(String path){
+        this.path = path;
         File folder = new File(path);
         this.packages = new ArrayList<>();
         this.javaFiles = new ArrayList<>();
@@ -25,10 +46,9 @@ public class PackageFile {
         searchResults = folder.listFiles();
         for(File f: searchResults){
             if(f.isDirectory()) {
-                packages.add(new PackageFile(f.getPath()));
+                packages.add(new PackageFile(f.getPath(), this));
             }
         }
-
     }
 
     public List<PackageFile> getPackages() {
