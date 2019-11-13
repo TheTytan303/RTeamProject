@@ -1,5 +1,6 @@
+package file.reading;
+
 import java.io.*;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,14 @@ public class JavaFile {
 
 
 
-    public JavaFile(){}
+    public JavaFile(String path){
+        this.path = path;
+    }
     public JavaFile(File f){
         this.path = f.getPath();
-        this.size = f.getTotalSpace();
+        this.size = f.length();
+        imports = new ArrayList<>();
+        Parser.fillImports(this.imports);
     }
 
     //----------------------------------------------------------------------------------Getters
