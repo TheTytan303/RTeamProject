@@ -1,4 +1,4 @@
-package files.service;//package io.github.TheTytan303.RTeamProject;
+package files.service;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -40,17 +40,5 @@ public class Parser {
             }
         }
         return imports;
-    }
-
-    /* Pokazówka */
-    public static void main(String[] args) {
-        for (JavaFile jf : JavaFile.getFilesFrom(JavaFile.getProjectPath())) {
-            try {
-                Set<Import> im = Parser.getImports(jf);
-                for (Import i : im) {
-                    System.out.println(String.format("%s |||| %s , %s", i.getImportedPackage(), i.getImportedClass(), i));
-                }
-            } catch (FileNotFoundException ignore) {}
-        }
     }
 }
