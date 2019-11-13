@@ -10,33 +10,36 @@ public class PackageFile {
     private String name;
     private String path;
 
-
-
     public PackageFile(String path){
         File folder = new File(path);
         this.packages = new ArrayList<>();
         this.javaFiles = new ArrayList<>();
-        this.path=path;
-        this.name = path.split("\\\\")[path.split("\\\\").length-1];
+        this.path = path;
+        this.name = path.split(File.separator)[path.split(File.separator).length-1];
         File[] searchResults = folder.listFiles(pathname -> pathname.getPath().endsWith(".java"));
-        for(File f: searchResults){
-            javaFiles.add(new JavaFile(f));
-        }
-        searchResults = folder.listFiles();
-        for(File f: searchResults){
-            if(f.isDirectory()) {
-                packages.add(new PackageFile(f.getPath()));
+        if (searchResults != null) {
+            for (File f : searchResults) {
+                javaFiles.add(new JavaFile(f));
             }
         }
-
+        searchResults = folder.listFiles();
+        if (searchResults != null) {
+            for (File f : searchResults) {
+                if (f.isDirectory()) {
+                    packages.add(new PackageFile(f.getPath()));
+                }
+            }
+        }
     }
 
     public List<PackageFile> getPackages() {
         return packages;
     }
+
     public List<JavaFile> getJavaFiles() {
         return javaFiles;
     }
+
     public String getName() {
         return name;
     }
@@ -44,9 +47,11 @@ public class PackageFile {
     public void setPackages(List<PackageFile> packages) {
         this.packages = packages;
     }
+
     public void setJavaFiles(List<JavaFile> javaFiles) {
         this.javaFiles = javaFiles;
     }
+
     public void setName(String name) {
         this.name = name;
     }
