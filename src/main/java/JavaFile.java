@@ -1,13 +1,14 @@
-package file.reading;
-
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class JavaFile {
+public class JavaFile implements Comparator<JavaFile> {
     private String path;
+    private String pack;
     private Long size;
     private List<JavaFile> imports;
+    private List<Import> imports2;
 
 
 
@@ -17,8 +18,8 @@ public class JavaFile {
     public JavaFile(File f){
         this.path = f.getPath();
         this.size = f.length();
-        imports = new ArrayList<>();
-        Parser.fillImports(this.imports);
+        this.pack = f.getPath().replace("/",".");
+        imports2 = new ArrayList<>(Parser.getImports(this));
     }
 
     //----------------------------------------------------------------------------------Getters
@@ -57,8 +58,13 @@ public class JavaFile {
 
 
     @Override
-    public String toString() {
+    public int compare(JavaFile o1, JavaFile o2) {
 
+        return o1.getPath().compareTo(o2.path);
+    }
+
+    @Override
+    public String toString() {
         return "["+this.getSize()+"B]: "+this.getPath();
     }
 
@@ -70,10 +76,17 @@ public class JavaFile {
         searchFolderFor(file, ".java", returnVale);
         return returnVale;
     }
-
     //poberz scieżkę projektu
     public static String getProjectPath(){
         return System.getProperty("user.dir");
+    }
+
+    public static JavaFile toJF(String path){
+        File file = new File(path);
+        if(file.getPath().endsWith(".java")){
+            return new JavaFile(file);
+        }
+        return null;
     }
 
     private static void searchFolderFor(File folder, String name, List<JavaFile> list){
@@ -88,6 +101,25 @@ public class JavaFile {
             }else{
                 if(f.isDirectory()){
                     searchFolderFor(f ,name, list);
+                }
+            }
+        }
+    }
+
+    public static class GraphFactory{
+        List<JavaFile> readedFiles;
+        public GraphFactory(String path){
+            readedFiles = new ArrayList<>();
+            List<JavaFile> toRead = new ArrayList<>();
+            toRead.add(new JavaFile(new File(path)));
+            for(JavaFile jf: toRead){
+                readedFiles.add(jf);
+                for(Import i: jf.imports2){
+                    if(i.getImportedClass() == null){
+
+                    }else {
+
+                    }
                 }
             }
         }

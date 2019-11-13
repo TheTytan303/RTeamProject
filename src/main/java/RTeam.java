@@ -1,5 +1,4 @@
-import file.reading.JavaFile;
-import file.reading.Parser;
+
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -8,7 +7,6 @@ public class RTeam {
 
     public static void main(String[] args){
         List<JavaFile> list = JavaFile.getFilesFrom(JavaFile.getProjectPath());
-        Parser.fillImports(list);
         for(JavaFile file: list){
             System.out.println(file);
             try {
