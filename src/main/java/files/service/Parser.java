@@ -1,4 +1,4 @@
-package files.service;//package io.github.TheTytan303.RTeamProject;
+package files.service;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -6,6 +6,7 @@ import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import files.model.JavaFile;
+import files.model.PackageFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -19,7 +20,7 @@ public class Parser {
         if (pd.isPresent()) {
             return pd.get().getName().asString();
         } else {
-            return "";
+            return "?"; // TODO
         }
     }
 
@@ -42,15 +43,27 @@ public class Parser {
         return imports;
     }
 
-    /* Pokazówka */
-    public static void main(String[] args) {
-        for (JavaFile jf : JavaFile.getFilesFrom(JavaFile.getProjectPath())) {
+    public static void parse(PackageFile pf) {
+        for (JavaFile jf : pf.getJavaFiles()) {
+            Set<Import> im;
+            System.out.println(String.format("File: %s", jf.getPath()));
+            System.out.println(String.format("Package: %s", pf.getName()));
             try {
-                Set<Import> im = Parser.getImports(jf);
-                for (Import i : im) {
-                    System.out.println(String.format("%s |||| %s , %s", i.getImportedPackage(), i.getImportedClass(), i));
-                }
-            } catch (FileNotFoundException ignore) {}
+                im = Parser.getImports(jf);
+            } catch (FileNotFoundException e) {
+                continue;
+            }
+            System.out.println(String.format("Imports (%d):", im.size()));
+            for (Import i : im) {
+                System.out.println(String.format("\t%s", i));
+            }
         }
+        for (PackageFile spf : pf.getPackages()) {
+            parse(spf);
+        }
+    }
+
+    public static void main(String[] args) {
+        parse(new PackageFile(JavaFile.getProjectPath()));
     }
 }

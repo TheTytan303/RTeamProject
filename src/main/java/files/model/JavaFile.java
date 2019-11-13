@@ -60,7 +60,7 @@ public class JavaFile implements Comparator<JavaFile> {
         return this.path;
     }
     public String getName(){
-        String[] tab = this.getPath().split("/");
+        String[] tab = this.getPath().split(File.separator);
         return tab[tab.length-1];
     }
 
@@ -90,7 +90,8 @@ public class JavaFile implements Comparator<JavaFile> {
     }
     //poberz scieżkę projektu
     public static String getProjectPath(){
-        return System.getProperty("user.dir")+"\\src\\main\\java";
+        String sep = File.separator;
+        return System.getProperty("user.dir")+sep+"src"+sep+"main"+sep+"java";
     }
 
     public static JavaFile toJF(String path){
