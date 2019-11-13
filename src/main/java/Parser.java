@@ -26,19 +26,16 @@ public class Parser {
         Set<Import> imports = new HashSet<>();
         String content = jf.getContent();
         CompilationUnit cu = StaticJavaParser.parse(content);
-        Optional<PackageDeclaration> pd = cu.getPackageDeclaration();
         for (ImportDeclaration id : cu.getImports())  {
             Name importName = id.getName();
             String fullImport = importName.asString();
             Optional<Name> qualifier = importName.getQualifier();
-            if (id.isAsterisk()) {
+            if (id.isAsterisk() || !qualifier.isPresent()) {
                 imports.add(new Import(fullImport));
-            } else if (qualifier.isPresent()) {
-                String fromPackage = qualifier.get().asString();
-                String importedClass = importName.removeQualifier().asString();
-                imports.add(new Import(fromPackage, importedClass));
             } else {
-                imports.add(new Import(fullImport)); // TODO
+                String fromPackage = qualifier.get().asString();
+                String importedClass = importName.getIdentifier();
+                imports.add(new Import(fromPackage, importedClass));
             }
         }
         return imports;
