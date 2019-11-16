@@ -27,7 +27,7 @@ public class JavaFile implements Comparator<JavaFile> {
         this.path = f.getPath();
         this.size = f.length();
         try {
-            this.pack = Parser.getPackage(this);
+            this.pack = Parser.getPackage(this).orElse("?");
             imports2 = new ArrayList<>(Parser.getImports(this));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
