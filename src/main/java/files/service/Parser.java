@@ -4,17 +4,12 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import files.model.JavaFile;
 import files.model.PackageFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Parser {
 
@@ -56,11 +51,6 @@ public class Parser {
         return imports;
     }
 
-    private static Map<String, Set<String>> _file_graph(PackageFile pf, Map<String, Set<String>> g) {
-        // TODO
-        return null;
-    }
-
     private static Map<String, Set<String>> _package_graph(PackageFile pf, Map<String, Set<String>> g) {
         for (JavaFile jf : pf.getJavaFiles()) {
             Set<Import> im;
@@ -88,40 +78,8 @@ public class Parser {
     }
 
     private static Map<String, Set<String>> _call_graph(PackageFile pf, Map<String, Set<String>> g) {
-        for (JavaFile jf : pf.getJavaFiles()) {
-            String content;
-            try {
-                content = jf.getContent();
-            } catch (FileNotFoundException e) {
-                continue;
-            }
-            CompilationUnit cu = StaticJavaParser.parse(content);
-            //cu.findAll(Method)
-            for (ClassOrInterfaceDeclaration coi : cu.findAll(ClassOrInterfaceDeclaration.class).stream()
-                    .filter(co-> !co.isInterface())
-                    .collect(Collectors.toSet())) {
-                Set<String> calls = new HashSet<>();
-                for (MethodDeclaration md : coi.getMethods()) {
-                    md.accept(new MethodCallGatherer(), calls);
-                }
-                g.put(coi.getName().asString(), calls);
-            }
-        }
-        for (PackageFile spf : pf.getPackages()) {
-            _call_graph(spf, g);
-        }
+        // TODO
         return g;
-    }
-
-    /**
-     * Constructs a mapping: file imports a set of packages; Map<String, Set<String>>.
-     * Note that file_graph() is somewhat similar to package_graph()
-     * @param path directory to be scanned
-     * @return Mapping
-     */
-    public static Map<String, Set<String>> file_graph(String path) {
-        Map<String, Set<String>> g = new HashMap<>();
-        return _file_graph(new PackageFile(path), g);
     }
 
     /**
