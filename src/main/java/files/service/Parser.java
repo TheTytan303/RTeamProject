@@ -16,18 +16,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class MCV extends VoidVisitorAdapter<Set<String>> {
-    @Override
-    public void visit(MethodCallExpr mce, Set<String> m) {
-        if (mce.getScope().isPresent()) {
-            m.add(mce.getScope().get() + "." + mce.getName().asString());
-        } else {
-            m.add(mce.getName().asString());
-        }
-        super.visit(mce, m);
-    }
-}
-
 public class Parser {
 
     /**
@@ -68,12 +56,17 @@ public class Parser {
         return imports;
     }
 
+    private static Map<String, Set<String>> _file_graph(PackageFile pf, Map<String, Set<String>> g) {
+        // TODO
+        return null;
+    }
+
     private static Map<String, Set<String>> _package_graph(PackageFile pf, Map<String, Set<String>> g) {
         for (JavaFile jf : pf.getJavaFiles()) {
             Set<Import> im;
             String key;
             try {
-                key = getPackage(jf).orElse(jf.getName());
+                key = getPackage(jf).orElse("<none>");
                 im = Parser.getImports(jf);
             } catch (FileNotFoundException e) {
                 continue;
@@ -103,12 +96,13 @@ public class Parser {
                 continue;
             }
             CompilationUnit cu = StaticJavaParser.parse(content);
+            //cu.findAll(Method)
             for (ClassOrInterfaceDeclaration coi : cu.findAll(ClassOrInterfaceDeclaration.class).stream()
                     .filter(co-> !co.isInterface())
                     .collect(Collectors.toSet())) {
                 Set<String> calls = new HashSet<>();
                 for (MethodDeclaration md : coi.getMethods()) {
-                    md.accept(new MCV(), calls);
+                    md.accept(new MethodCallGatherer(), calls);
                 }
                 g.put(coi.getName().asString(), calls);
             }
@@ -117,6 +111,17 @@ public class Parser {
             _call_graph(spf, g);
         }
         return g;
+    }
+
+    /**
+     * Constructs a mapping: file imports a set of packages; Map<String, Set<String>>.
+     * Note that file_graph() is somewhat similar to package_graph()
+     * @param path directory to be scanned
+     * @return Mapping
+     */
+    public static Map<String, Set<String>> file_graph(String path) {
+        Map<String, Set<String>> g = new HashMap<>();
+        return _file_graph(new PackageFile(path), g);
     }
 
     /**
