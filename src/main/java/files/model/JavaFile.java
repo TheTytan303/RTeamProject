@@ -6,13 +6,12 @@ import files.service.Import;
 import files.service.Parser;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class JavaFile implements Comparator<JavaFile> {
     private String path;
     private String pack;
+    private String className;
     private Long size;
     private PackageFile parent;
     private List<JavaFile> imports;
@@ -26,12 +25,15 @@ public class JavaFile implements Comparator<JavaFile> {
     public JavaFile(File f){
         this.path = f.getPath();
         this.size = f.length();
+        this.imports = new ArrayList<>();
         try {
             this.pack = Parser.getPackage(this).orElse("?");
             imports2 = new ArrayList<>(Parser.getImports(this));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        String[] tmp = getName().split("\\.");
+        this.className = tmp[0];
     }
 
     //----------------------------------------------------------------------------------Getters
@@ -60,24 +62,42 @@ public class JavaFile implements Comparator<JavaFile> {
         return this.path;
     }
     public String getName(){
-        String[] tab = this.getPath().split(File.separator);
-        return tab[tab.length-1];
-    }
+        String separator = File.separator;
+        if(separator.equals("\\")){
+            String[] tab = this.getPath().split("\\\\");
+            return tab[tab.length-1];
+        }
+        else {
 
+            String[] tab = this.getPath().split(File.separator);
+            return tab[tab.length-1];
+        }
+    }
+    public String getClassName(){
+        return className;
+    }
+    public String getPack(){return this.pack;}
     //----------------------------------------------------------------------------------Setters
     public void setImports(List<JavaFile> imports) {
         this.imports = imports;
     }
-
+    public void setParent(PackageFile parent) {
+        this.parent = parent;
+    }
+    public void addImport(Collection<JavaFile> collection){
+        for(JavaFile f : collection){
+            if(f!=this)
+            this.imports.add(f);
+        }
+    }
     //----------------------------------------------------------------------------------Overrides
     @Override
     public int compare(JavaFile o1, JavaFile o2) {
-
         return o1.getPath().compareTo(o2.path);
     }
     @Override
     public String toString() {
-        return "["+this.getSize()+"B]: "+this.getPath();
+        return "["+this.getSize()+"B]: "+this.getClassName();
     }
 
     //----------------------------------------------------------------------------------Static
@@ -115,6 +135,19 @@ public class JavaFile implements Comparator<JavaFile> {
                 if(f.isDirectory()){
                     searchFolderFor(f ,name, list);
                 }
+            }
+        }
+    }
+    //----------------------------------------------------------------------------------Private
+    void convertImports(List<JavaFile> allFiles){
+        Map<String, JavaFile> projectFilesNames = new HashMap<>();
+        for(JavaFile file: allFiles){
+            projectFilesNames.put(file.getPack() + "." + file.className,file);
+        }
+        for(Import i:imports2){
+            JavaFile tmp = projectFilesNames.get(i.toString());
+            if(tmp != null){
+                this.imports.add(tmp);
             }
         }
     }

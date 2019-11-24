@@ -7,47 +7,68 @@ import java.util.List;
 public class PackageFile {
     private List<PackageFile> packages;
     private List<JavaFile> javaFiles;
+    private List<JavaFile> allJavaSubFiles;
     private String name;
     private String path;
     private PackageFile parent;
 
 
 
-    public PackageFile(String path, PackageFile parent){
+    private PackageFile(String path, PackageFile parent){
         File folder = new File(path);
         this.parent = parent;
         this.packages = new ArrayList<>();
         this.javaFiles = new ArrayList<>();
+        this.allJavaSubFiles = new ArrayList<>();
         this.path=path;
         this.name = path.split("\\\\")[path.split("\\\\").length-1];
         File[] searchResults = folder.listFiles(pathname -> pathname.getPath().endsWith(".java"));
         for(File f: searchResults){
-            javaFiles.add(new JavaFile(f));
+            JavaFile tmp = new JavaFile(f);
+            tmp.setParent(this);
+            javaFiles.add(tmp);
         }
+        for(JavaFile f: this.javaFiles){
+            f.addImport(javaFiles);
+        }
+        allJavaSubFiles.addAll(javaFiles);
         searchResults = folder.listFiles();
         for(File f: searchResults){
             if(f.isDirectory()) {
-                packages.add(new PackageFile(f.getPath(), this));
+                PackageFile pf = new PackageFile(f.getPath(), this);
+                packages.add(pf);
+                allJavaSubFiles.addAll(pf.getSubFiles());
             }
         }
-
     }
     public PackageFile(String path){
         this.path = path;
         File folder = new File(path);
         this.packages = new ArrayList<>();
         this.javaFiles = new ArrayList<>();
+        this.allJavaSubFiles = new ArrayList<>();
         this.path=path;
         this.name = path.split("\\\\")[path.split("\\\\").length-1];
         File[] searchResults = folder.listFiles(pathname -> pathname.getPath().endsWith(".java"));
         for(File f: searchResults){
-            javaFiles.add(new JavaFile(f));
+            JavaFile tmp = new JavaFile(f);
+            tmp.setParent(this);
+            javaFiles.add(tmp);
         }
+        for(JavaFile f: this.javaFiles){
+            f.addImport(javaFiles);
+        }
+        allJavaSubFiles.addAll(javaFiles);
         searchResults = folder.listFiles();
         for(File f: searchResults){
             if(f.isDirectory()) {
-                packages.add(new PackageFile(f.getPath(), this));
+                PackageFile pf = new PackageFile(f.getPath(), this);
+                packages.add(pf);
+                allJavaSubFiles.addAll(pf.getSubFiles());
             }
+        }
+        for(JavaFile f: allJavaSubFiles){
+            f.convertImports(allJavaSubFiles);
         }
     }
 
@@ -59,6 +80,9 @@ public class PackageFile {
     }
     public String getName() {
         return name;
+    }
+    public List<JavaFile> getSubFiles(){
+        return this.allJavaSubFiles;
     }
 
     public void setPackages(List<PackageFile> packages) {
@@ -74,5 +98,9 @@ public class PackageFile {
     @Override
     public String toString() {
         return name;
+    }
+
+    private void addMyFiles(List<JavaFile> files){
+
     }
 }
