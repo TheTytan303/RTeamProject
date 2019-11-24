@@ -4,12 +4,14 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import files.model.JavaFile;
 import files.model.PackageFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Parser {
 
@@ -56,7 +58,7 @@ public class Parser {
             Set<Import> im;
             String key;
             try {
-                key = getPackage(jf).orElse("<none>");
+                key = getPackage(jf).orElse("default.package");
                 im = Parser.getImports(jf);
             } catch (FileNotFoundException e) {
                 continue;
@@ -97,7 +99,28 @@ public class Parser {
         return _call_graph(new PackageFile(path), g);
     }
 
+    public static Set<ClassDeclaration> getClassesOrInterfaces(JavaFile jf) throws FileNotFoundException {
+        Set<ClassDeclaration> cds = new HashSet<>();
+        String content = jf.getContent();
+        CompilationUnit cu = StaticJavaParser.parse(content);
+        Set<ClassOrInterfaceDeclaration> cd = cu.findAll(ClassOrInterfaceDeclaration.class).stream().collect(Collectors.toSet());
+        for (ClassOrInterfaceDeclaration c : cd) {
+            cds.add(new ClassDeclaration(c, getPackage(jf)));
+        }
+        return cds;
+    }
+
     public static void main(String[] args) {
+        try {
+            PackageFile pf = new PackageFile(JavaFile.getProjectPath());
+            for (JavaFile jf : pf.getSubFiles()) {
+                for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
+                    System.out.println(c);
+                }
+            }
+        } catch (FileNotFoundException ignore) {}
+
+        /*
         Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
         for (String k : g.keySet()) {
             System.out.println(String.format("'%s' imports: (%d)", k, g.get(k).size()));
@@ -113,6 +136,6 @@ public class Parser {
                 System.out.println(String.format("\t%s", v));
             }
         }
-        System.out.println("damn");
+        */
     }
 }
