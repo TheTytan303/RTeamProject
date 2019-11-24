@@ -12,8 +12,16 @@ public class MethodDeclaration {
         this.md = md;
     }
 
-    public String getAccess() {
-        return this.md.getAccessSpecifier().asString();
+    public AccessModifier getAccessModifier() {
+        if (this.md.isPrivate()) {
+            return AccessModifier.PRIVATE;
+        } else if (this.md.isProtected()) {
+            return AccessModifier.PROTECTED;
+        } else if (this.md.isPublic()) {
+            return AccessModifier.PUBLIC;
+        } else {
+            return AccessModifier.DEFAULT;
+        }
     }
 
     public boolean isStatic() {
@@ -45,6 +53,6 @@ public class MethodDeclaration {
 
     @Override
     public String toString() {
-        return this.getAccess() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypes() + ") {...}";
+        return this.getAccessModifier() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypes() + ") {...}";
     }
 }

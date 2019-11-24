@@ -41,6 +41,10 @@ public class ClassDeclaration {
         return this.coid.isAbstract();
     }
 
+    public boolean isInterface() {
+        return this.coid.isInterface();
+    }
+
     public String getName() {
         return this.coid.getName().asString();
     }
