@@ -5,12 +5,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Name;
 import files.model.JavaFile;
 import files.model.PackageFile;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +58,7 @@ public class Parser {
             Set<Import> im;
             String key;
             try {
-                key = getPackage(jf).orElse("<none>");
+                key = getPackage(jf).orElse("default.package");
                 im = Parser.getImports(jf);
             } catch (FileNotFoundException e) {
                 continue;
@@ -107,7 +105,7 @@ public class Parser {
         CompilationUnit cu = StaticJavaParser.parse(content);
         Set<ClassOrInterfaceDeclaration> cd = cu.findAll(ClassOrInterfaceDeclaration.class).stream().collect(Collectors.toSet());
         for (ClassOrInterfaceDeclaration c : cd) {
-            cds.add(new ClassDeclaration(c));
+            cds.add(new ClassDeclaration(c, getPackage(jf)));
         }
         return cds;
     }

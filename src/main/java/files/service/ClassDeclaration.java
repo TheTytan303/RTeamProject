@@ -4,14 +4,17 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ClassDeclaration {
+    private String pack;
     private ClassOrInterfaceDeclaration coid;
     private Set<MethodDeclaration> methods;
     private Set<FieldDeclaration> fields;
 
-    public ClassDeclaration(ClassOrInterfaceDeclaration coid) {
+    public ClassDeclaration(ClassOrInterfaceDeclaration coid, Optional<String> pack) {
+        this.pack = pack.orElse("default.package");
         this.coid = coid;
         this.methods = new HashSet<>();
         for (com.github.javaparser.ast.body.MethodDeclaration md : this.coid.getMethods()) {
@@ -28,6 +31,10 @@ public class ClassDeclaration {
                 this.fields.add(new FieldDeclaration(fd, 0));
             }
         }
+    }
+
+    public String getPackage() {
+        return pack;
     }
 
     public boolean isAbstract() {
@@ -53,6 +60,7 @@ public class ClassDeclaration {
             sb.append("abstract");
         }
         sb.append("class ");
+        sb.append(this.getPackage()+".");
         sb.append(this.getName());
         sb.append(" {\n");
         for (FieldDeclaration fd : this.getFields()) {
