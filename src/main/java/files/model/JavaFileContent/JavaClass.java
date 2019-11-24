@@ -1,5 +1,7 @@
 package files.model.JavaFileContent;
 import files.model.JavaFile;
+import files.service.ClassDeclaration;
+import files.service.MethodDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,13 @@ public class JavaClass{
         this.subClasses = new ArrayList<>();
         this.methods = new ArrayList<>();
         this.fields = new ArrayList<>();
+    }
+    public JavaClass(ClassDeclaration cd){
+        this.name = cd.getName();
+        for(MethodDeclaration md : cd.getMethods()){
+            JavaMethod method = new JavaMethod(md);
+            this.methods.add(method);
+        }
     }
 
     //----------------------------------------------------------------------------------Getters
