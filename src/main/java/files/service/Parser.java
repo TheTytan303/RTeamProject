@@ -13,17 +13,25 @@ import java.util.*;
 
 public class Parser {
 
-    public static String getPackage(JavaFile jf) throws FileNotFoundException {
+    /**
+     * Parses the given file and returns the declared package name.
+     * @param jf JavaFile
+     * @return Name of the package
+     * @throws FileNotFoundException
+     */
+    public static Optional<String> getPackage(JavaFile jf) throws FileNotFoundException {
         String content = jf.getContent();
         CompilationUnit cu = StaticJavaParser.parse(content);
         Optional<PackageDeclaration> pd = cu.getPackageDeclaration();
-        if (pd.isPresent()) {
-            return pd.get().getName().asString();
-        } else {
-            return "?"; // TODO
-        }
+        return pd.map(packageDeclaration -> packageDeclaration.getName().asString());
     }
 
+    /**
+     * Gathers the imports in given file
+     * @param jf JavaFile
+     * @return Set of Imports
+     * @throws FileNotFoundException
+     */
     public static Set<Import> getImports(JavaFile jf) throws FileNotFoundException {
         Set<Import> imports = new HashSet<>();
         String content = jf.getContent();
@@ -43,27 +51,67 @@ public class Parser {
         return imports;
     }
 
-    public static void parse(PackageFile pf) {
+    private static Map<String, Set<String>> _package_graph(PackageFile pf, Map<String, Set<String>> g) {
         for (JavaFile jf : pf.getJavaFiles()) {
             Set<Import> im;
-            System.out.println(String.format("File: %s", jf.getPath()));
-            System.out.println(String.format("Package: %s", pf.getName()));
+            String key;
             try {
+                key = getPackage(jf).orElse("<none>");
                 im = Parser.getImports(jf);
             } catch (FileNotFoundException e) {
                 continue;
             }
-            System.out.println(String.format("Imports (%d):", im.size()));
             for (Import i : im) {
-                System.out.println(String.format("\t%s", i));
+                if (g.containsKey(key)) {
+                    g.get(key).add(i.toString());
+                } else {
+                    Set<String> s = new HashSet<>();
+                    s.add(i.toString());
+                    g.put(key, s);
+                }
             }
         }
         for (PackageFile spf : pf.getPackages()) {
-            parse(spf);
+            _package_graph(spf, g);
         }
+        return g;
+    }
+
+    private static Map<String, Set<String>> _call_graph(PackageFile pf, Map<String, Set<String>> g) {
+        // TODO
+        return g;
+    }
+
+    /**
+     * Constructs a mapping: package imports a set of packages; Map<String, Set<String>>
+     * @param path directory to be scanned
+     * @return Mapping
+     */
+    public static Map<String, Set<String>> package_graph(String path) {
+        Map<String, Set<String>> g = new HashMap<>();
+        return _package_graph(new PackageFile(path), g);
+    }
+
+    public static Map<String, Set<String>> call_graph(String path) {
+        Map<String, Set<String>> g = new HashMap<>();
+        return _call_graph(new PackageFile(path), g);
     }
 
     public static void main(String[] args) {
-        parse(new PackageFile(JavaFile.getProjectPath()));
+        Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
+        for (String k : g.keySet()) {
+            System.out.println(String.format("'%s' imports: (%d)", k, g.get(k).size()));
+            for (String v : g.get(k)) {
+                System.out.println(String.format("\t%s", v));
+            }
+        }
+
+        Map<String, Set<String>> c = call_graph(JavaFile.getProjectPath());
+        for (String k : c.keySet()) {
+            System.out.println(String.format("'%s' calls: (%d)", k, c.get(k).size()));
+            for (String v : c.get(k)) {
+                System.out.println(String.format("\t%s", v));
+            }
+        }
     }
 }
