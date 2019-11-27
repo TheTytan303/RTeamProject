@@ -1,5 +1,6 @@
 package files.model.JavaFileContent;
 
+import files.service.AccessModifier;
 import files.service.MethodDeclaration;
 
 import java.util.ArrayList;
@@ -11,21 +12,18 @@ public class JavaMethod{
     List<String> calledMethods;
     JavaClass returnVale;
     Boolean isStatic, isSynchronized;
-    Access access;
+    AccessModifier access;
 
     private String code;
 
     public JavaMethod(MethodDeclaration md){
         this.name = md.getName();
-        if(md.getAccess() == "")
-        {
-            this.access = Access.type_private;
-        }
+        this.access = md.getAccessModifier();
         this.isStatic = md.isStatic();
         this.isSynchronized = md.isSynchronized();
         this.params = new ArrayList<>();
         this.returnVale = new JavaClass(md.getReturnType());
-        for(String s: md.getArgumentTypes()){
+        for(String s: md.getArgumentTypeNames()){
             this.params.add(new JavaClass(s));
         }
     }
