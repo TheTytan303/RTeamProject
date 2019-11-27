@@ -1,6 +1,7 @@
 package files.model.JavaFileContent;
 import files.model.JavaFile;
 import files.service.ClassDeclaration;
+import files.service.FieldDeclaration;
 import files.service.MethodDeclaration;
 
 import java.util.ArrayList;
@@ -24,12 +25,19 @@ public class JavaClass{
     }
     public JavaClass(ClassDeclaration cd){
         this.name = cd.getName();
+        methods = new ArrayList<>();
+        fields = new ArrayList<>();
+        for(FieldDeclaration fd : cd.getFields()){
+            fields.add(new JavaField(fd));
+        }
         for(MethodDeclaration md : cd.getMethods()){
             JavaMethod method = new JavaMethod(md);
             this.methods.add(method);
         }
     }
-
+    public JavaClass(String name){
+        this.name = name;
+    }
     //----------------------------------------------------------------------------------Getters
     public String getName() {
         return name;
@@ -62,4 +70,9 @@ public class JavaClass{
     public void setCode(String code){this.code=code;
     }
     //----------------------------------------------------------------------------------public
+
+    @Override
+    public String toString(){
+        return this.name;
+    }
 }

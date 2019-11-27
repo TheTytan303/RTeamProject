@@ -1,6 +1,7 @@
 package files.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,11 @@ public class PackageFile {
             }
         }
         for(JavaFile f: allJavaSubFiles){
-            f.convertImports(allJavaSubFiles);
+            try {
+                f.convertImports(allJavaSubFiles);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
