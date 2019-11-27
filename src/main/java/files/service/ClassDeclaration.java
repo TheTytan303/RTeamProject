@@ -2,15 +2,13 @@ package files.service;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class ClassDeclaration {
     private String pack;
     private ClassOrInterfaceDeclaration coid;
     private Set<MethodDeclaration> methods;
+    private Map<String, MethodDeclaration> methodsByName;
     private Set<FieldDeclaration> fields;
 
     public ClassDeclaration(ClassOrInterfaceDeclaration coid, Optional<String> pack) {
@@ -19,6 +17,10 @@ public class ClassDeclaration {
         this.methods = new HashSet<>();
         for (com.github.javaparser.ast.body.MethodDeclaration md : this.coid.getMethods()) {
             this.methods.add(new MethodDeclaration(md));
+        }
+        this.methodsByName = new HashMap<>();
+        for (MethodDeclaration md : this.methods) {
+            this.methodsByName.put(md.getName(), md);
         }
         this.fields = new HashSet<>();
         List<com.github.javaparser.ast.body.FieldDeclaration> fds = this.coid.getFields();
@@ -41,12 +43,20 @@ public class ClassDeclaration {
         return this.coid.isAbstract();
     }
 
+    public boolean isInterface() {
+        return this.coid.isInterface();
+    }
+
     public String getName() {
         return this.coid.getName().asString();
     }
 
     public Set<MethodDeclaration> getMethods() {
         return methods;
+    }
+
+    public MethodDeclaration getMethod(String name) {
+        return this.methodsByName.get(name);
     }
 
     public Set<FieldDeclaration> getFields() {
@@ -60,14 +70,19 @@ public class ClassDeclaration {
             sb.append("abstract");
         }
         sb.append("class ");
-        sb.append(this.getPackage()+".");
+        sb.append(this.getPackage());
+        sb.append(".");
         sb.append(this.getName());
         sb.append(" {\n");
         for (FieldDeclaration fd : this.getFields()) {
-            sb.append("\t"+fd+"\n");
+            sb.append("\t");
+            sb.append(fd);
+            sb.append("\n");
         }
         for (MethodDeclaration md : this.getMethods()) {
-            sb.append("\t"+md+"\n");
+            sb.append("\t");
+            sb.append(md);
+            sb.append("\n");
         }
         sb.append("}");
         return sb.toString();

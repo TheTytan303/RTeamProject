@@ -79,8 +79,23 @@ public class Parser {
         return g;
     }
 
-    private static Map<String, Set<String>> _call_graph(PackageFile pf, Map<String, Set<String>> g) {
-        // TODO
+    private static Map<String, Map<String, Integer>> _call_graph(PackageFile pf, Map<String, Map<String, Integer>> g) {
+        for (JavaFile jf : pf.getJavaFiles()) {
+            Set<ClassDeclaration> classDeclarations;
+            try {
+                classDeclarations = getClassesOrInterfaces(jf);
+            } catch (FileNotFoundException e) {
+                continue;
+            }
+            for (ClassDeclaration cd : classDeclarations) {
+                for (MethodDeclaration md : cd.getMethods()) {
+                    g.put(cd.getName() + "." + md.getName(), md.getMethodCalls());
+                }
+            }
+        }
+        for (PackageFile spf : pf.getPackages()) {
+            _call_graph(spf, g);
+        }
         return g;
     }
 
@@ -94,8 +109,8 @@ public class Parser {
         return _package_graph(new PackageFile(path), g);
     }
 
-    public static Map<String, Set<String>> call_graph(String path) {
-        Map<String, Set<String>> g = new HashMap<>();
+    public static Map<String, Map<String, Integer>> call_graph(String path) {
+        Map<String, Map<String, Integer>> g = new HashMap<>();
         return _call_graph(new PackageFile(path), g);
     }
 
@@ -111,6 +126,7 @@ public class Parser {
     }
 
     public static void main(String[] args) {
+        /*
         try {
             PackageFile pf = new PackageFile(JavaFile.getProjectPath());
             for (JavaFile jf : pf.getSubFiles()) {
@@ -119,8 +135,8 @@ public class Parser {
                 }
             }
         } catch (FileNotFoundException ignore) {}
+        */
 
-        /*
         Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
         for (String k : g.keySet()) {
             System.out.println(String.format("'%s' imports: (%d)", k, g.get(k).size()));
@@ -129,13 +145,13 @@ public class Parser {
             }
         }
 
-        Map<String, Set<String>> c = call_graph(JavaFile.getProjectPath());
-        for (String k : c.keySet()) {
-            System.out.println(String.format("'%s' calls: (%d)", k, c.get(k).size()));
-            for (String v : c.get(k)) {
-                System.out.println(String.format("\t%s", v));
+        Map<String, Map<String, Integer>> c = call_graph(JavaFile.getProjectPath());
+        for (String caller : c.keySet()) {
+            Map<String, Integer> calls = c.get(caller);
+            System.out.println(String.format("'%s' calls: (%d)", caller, calls.size()));
+            for (String callee : calls.keySet()) {
+                System.out.println(String.format("\t%s (%d)", callee, calls.get(callee)));
             }
         }
-        */
     }
 }

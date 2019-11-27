@@ -1,9 +1,10 @@
 package files.service;
 
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MethodDeclaration {
     private com.github.javaparser.ast.body.MethodDeclaration md;
@@ -12,8 +13,16 @@ public class MethodDeclaration {
         this.md = md;
     }
 
-    public String getAccess() {
-        return this.md.getAccessSpecifier().asString();
+    public AccessModifier getAccessModifier() {
+        if (this.md.isPrivate()) {
+            return AccessModifier.PRIVATE;
+        } else if (this.md.isProtected()) {
+            return AccessModifier.PROTECTED;
+        } else if (this.md.isPublic()) {
+            return AccessModifier.PUBLIC;
+        } else {
+            return AccessModifier.DEFAULT;
+        }
     }
 
     public boolean isStatic() {
@@ -32,7 +41,7 @@ public class MethodDeclaration {
         return this.md.getName().asString();
     }
 
-    public List<String> getArgumentTypes() {
+    public List<String> getArgumentTypeNames() {
         List<String> args = new ArrayList<>();
         for (Parameter p : this.md.getParameters()) {
             args.add(p.getName().asString());
@@ -40,11 +49,26 @@ public class MethodDeclaration {
         return args;
     }
 
-    /* TODO one can search for method calls there */
-    /* public List<?> getMethodCalls() {} */
+    public Map<String, Integer> getMethodCalls() {
+        Map<String, Integer> mc = new HashMap<>();
+        for (MethodCallExpr mce : this.md.findAll(MethodCallExpr.class).stream().collect(Collectors.toSet())) {
+            String key = "";
+            if (mce.getScope().isPresent()) {
+                key = mce.getScope().get().toString() + ".";
+            }
+            key += mce.getName();
+            if (mc.containsKey(key)) {
+                Integer count = mc.get(key);
+                mc.replace(key, count+1);
+            } else {
+                mc.put(key, 1);
+            }
+        }
+        return mc;
+    }
 
     @Override
     public String toString() {
-        return this.getAccess() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypes() + ") {...}";
+        return this.getAccessModifier() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypeNames() + ") {...}";
     }
 }

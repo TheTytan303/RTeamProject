@@ -9,12 +9,28 @@ public class FieldDeclaration {
         this.i = i;
     }
 
-    public String getAccess() {
-        return this.fd.getAccessSpecifier().asString();
+    public AccessModifier getAccessModifier() {
+        if (this.fd.isPrivate()) {
+            return AccessModifier.PRIVATE;
+        } else if (this.fd.isProtected()) {
+            return AccessModifier.PROTECTED;
+        } else if (this.fd.isPublic()) {
+            return AccessModifier.PUBLIC;
+        } else {
+            return AccessModifier.DEFAULT;
+        }
     }
 
     public boolean isStatic() {
         return this.fd.isStatic();
+    }
+
+    public boolean isVolatile() {
+        return this.fd.isVolatile();
+    }
+
+    public boolean isTransient() {
+        return this.fd.isTransient();
     }
 
     public String getType() {
@@ -27,6 +43,6 @@ public class FieldDeclaration {
 
     @Override
     public String toString() {
-        return this.getAccess() + " " + this.getType() + " " + getName();
+        return this.getAccessModifier() + " " + this.getType() + " " + getName();
     }
 }
