@@ -70,14 +70,19 @@ public class ClassDeclaration {
             sb.append("abstract");
         }
         sb.append("class ");
-        sb.append(this.getPackage()+".");
+        sb.append(this.getPackage());
+        sb.append(".");
         sb.append(this.getName());
         sb.append(" {\n");
         for (FieldDeclaration fd : this.getFields()) {
-            sb.append("\t"+fd+"\n");
+            sb.append("\t");
+            sb.append(fd);
+            sb.append("\n");
         }
         for (MethodDeclaration md : this.getMethods()) {
-            sb.append("\t"+md+"\n");
+            sb.append("\t");
+            sb.append(md);
+            sb.append("\n");
         }
         sb.append("}");
         return sb.toString();
