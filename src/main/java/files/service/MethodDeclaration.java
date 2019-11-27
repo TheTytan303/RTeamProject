@@ -51,7 +51,7 @@ public class MethodDeclaration {
 
     public Map<String, Integer> getMethodCalls() {
         Map<String, Integer> mc = new HashMap<>();
-        for (MethodCallExpr mce : this.md.findAll(MethodCallExpr.class).stream().collect(Collectors.toSet())) {
+        for (MethodCallExpr mce : new HashSet<>(this.md.findAll(MethodCallExpr.class))) {
             String key = "";
             if (mce.getScope().isPresent()) {
                 key = mce.getScope().get().toString() + ".";

@@ -109,6 +109,12 @@ public class Parser {
         return _package_graph(new PackageFile(path), g);
     }
 
+    /**
+     * Constructs a mapping: method calls other methods; the inner map
+     * contains the calledfunction and the number of times it was called
+     * @param path
+     * @return
+     */
     public static Map<String, Map<String, Integer>> call_graph(String path) {
         Map<String, Map<String, Integer>> g = new HashMap<>();
         return _call_graph(new PackageFile(path), g);
@@ -118,7 +124,7 @@ public class Parser {
         Set<ClassDeclaration> cds = new HashSet<>();
         String content = jf.getContent();
         CompilationUnit cu = StaticJavaParser.parse(content);
-        Set<ClassOrInterfaceDeclaration> cd = cu.findAll(ClassOrInterfaceDeclaration.class).stream().collect(Collectors.toSet());
+        Set<ClassOrInterfaceDeclaration> cd = new HashSet<>(cu.findAll(ClassOrInterfaceDeclaration.class));
         for (ClassOrInterfaceDeclaration c : cd) {
             cds.add(new ClassDeclaration(c, getPackage(jf)));
         }
@@ -126,7 +132,6 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        /*
         try {
             PackageFile pf = new PackageFile(JavaFile.getProjectPath());
             for (JavaFile jf : pf.getSubFiles()) {
@@ -135,7 +140,6 @@ public class Parser {
                 }
             }
         } catch (FileNotFoundException ignore) {}
-        */
 
         Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
         for (String k : g.keySet()) {
