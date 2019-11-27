@@ -44,7 +44,7 @@ public class MethodDeclaration {
     public List<String> getArgumentTypeNames() {
         List<String> args = new ArrayList<>();
         for (Parameter p : this.md.getParameters()) {
-            args.add(p.getName().asString());
+            args.add(p.getType().asString());
         }
         return args;
     }
