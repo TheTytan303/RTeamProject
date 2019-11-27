@@ -1,9 +1,10 @@
 package files.service;
 
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MethodDeclaration {
     private com.github.javaparser.ast.body.MethodDeclaration md;
@@ -48,8 +49,23 @@ public class MethodDeclaration {
         return args;
     }
 
-    /* TODO one can search for method calls there */
-    /* public List<?> getMethodCalls() {} */
+    public Map<String, Integer> getMethodCalls() {
+        Map<String, Integer> mc = new HashMap<>();
+        for (MethodCallExpr mce : this.md.findAll(MethodCallExpr.class).stream().collect(Collectors.toSet())) {
+            String key = "";
+            if (mce.getScope().isPresent()) {
+                key = mce.getScope().get().toString() + ".";
+            }
+            key += mce.getName();
+            if (mc.containsKey(key)) {
+                Integer count = mc.get(key);
+                mc.replace(key, count+1);
+            } else {
+                mc.put(key, 1);
+            }
+        }
+        return mc;
+    }
 
     @Override
     public String toString() {
