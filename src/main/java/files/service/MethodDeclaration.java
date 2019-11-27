@@ -41,7 +41,7 @@ public class MethodDeclaration {
         return this.md.getName().asString();
     }
 
-    public List<String> getArgumentTypes() {
+    public List<String> getArgumentTypeNames() {
         List<String> args = new ArrayList<>();
         for (Parameter p : this.md.getParameters()) {
             args.add(p.getName().asString());
@@ -69,6 +69,6 @@ public class MethodDeclaration {
 
     @Override
     public String toString() {
-        return this.getAccessModifier() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypes() + ") {...}";
+        return this.getAccessModifier() + " " + this.getReturnType()  + " " + getName() + " (" + getArgumentTypeNames() + ") {...}";
     }
 }
