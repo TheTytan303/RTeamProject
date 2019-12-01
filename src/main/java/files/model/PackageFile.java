@@ -1,5 +1,8 @@
 package files.model;
 
+import files.model.JavaFileContent.JavaClass;
+import files.model.JavaFileContent.JavaMethod;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -89,6 +92,27 @@ public class PackageFile {
     public List<JavaFile> getSubFiles(){
         return this.allJavaSubFiles;
     }
+    public List<JavaMethod> getSubMethods(){
+      List<JavaMethod> returnVale = new ArrayList<>();
+      for(PackageFile pf: packages){
+          returnVale.addAll(pf.getSubMethods());
+      }
+      for(JavaFile jf: javaFiles){
+          returnVale.addAll(jf.getMethods());
+      }
+      return  returnVale;
+    }
+    public List<JavaClass> getSubClasses(){
+        List<JavaClass> returnVale = new ArrayList<>();
+        for(PackageFile pf: packages){
+            returnVale.addAll(pf.getSubClasses());
+        }
+        for(JavaFile jf: javaFiles){
+            returnVale.addAll(jf.getClasses());
+        }
+
+        return returnVale;
+    }
 
     public void setPackages(List<PackageFile> packages) {
         this.packages = packages;
@@ -99,13 +123,13 @@ public class PackageFile {
     public void setName(String name) {
         this.name = name;
     }
+    public String getFullName(){
+        return this.path;
+    }
 
     @Override
     public String toString() {
         return name;
     }
 
-    private void addMyFiles(List<JavaFile> files){
-
-    }
 }

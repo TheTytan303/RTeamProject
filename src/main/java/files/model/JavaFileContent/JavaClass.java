@@ -23,8 +23,9 @@ public class JavaClass{
         this.methods = new ArrayList<>();
         this.fields = new ArrayList<>();
     }
-    public JavaClass(ClassDeclaration cd){
+    public JavaClass(JavaFile parent, ClassDeclaration cd){
         this.name = cd.getName();
+        this.parent = parent;
         methods = new ArrayList<>();
         fields = new ArrayList<>();
         for(FieldDeclaration fd : cd.getFields()){
@@ -74,5 +75,10 @@ public class JavaClass{
     @Override
     public String toString(){
         return this.name;
+    }
+
+    public String getFullName(){
+        String returnVale = parent.getFullName() +"|"+this;
+        return returnVale;
     }
 }

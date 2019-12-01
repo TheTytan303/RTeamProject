@@ -2,6 +2,7 @@ package files.model.JavaFileContent;
 
 import files.service.AccessModifier;
 import files.service.MethodDeclaration;
+import files.service.Parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +15,9 @@ import static files.service.AccessModifier.*;
 public class JavaMethod{
     private String name;
     private List<JavaClass> params;
-    private List<String> calledMethodsNames;
-    private List<JavaMethod> calledMethods;
-    private JavaClass returnVale;
+    private Map<String, Integer> calledMethodsNames;
+    private Map<JavaMethod, Integer> calledMethods;
+    private JavaClass returnType;
     private Boolean isStatic, isSynchronized;
     private Access access;
     private JavaClass parent;
@@ -39,38 +40,41 @@ public class JavaMethod{
                 this.access = Access.type_protected;
                 break;
         }
-        //this.access = md.getAccessModifier();
         this.isStatic = md.isStatic();
         this.isSynchronized = md.isSynchronized();
         this.params = new ArrayList<>();
-        this.returnVale = new JavaClass(md.getReturnType());
-        this.calledMethodsNames = new ArrayList<>();
-        this.calledMethods = new ArrayList<>();
+        this.returnType = new JavaClass(md.getReturnType());
+        this.calledMethodsNames = md.getMethodCalls();
+
+        this.calledMethods = new HashMap<>();
         this.parent = parent;
         for(String s: md.getArgumentTypeNames()){
             this.params.add(new JavaClass(s));
         }
     }
-
+    public String getFullName(){
+        String returnVale = ""+parent.getFullName()+"|"+this;
+        return returnVale;
+    }
     void convertMethods(List<JavaMethod> allMethods){
         Map<String, JavaMethod> map = new HashMap<>();
         for(JavaMethod m: allMethods){
             map.put(m.parent + "\\\\"+m.name, m);
         }
-        for(String methodName: calledMethodsNames){
-            System.out.println(methodName);
-        }
+        //for(String methodName: calledMethodsNames){
+        //    System.out.println(methodName);
+        //}
     }
 
     @Override
     public String toString(){
-        String returnVale = this.returnVale + " " + this.name + "(" ;
+        String returnVale = this.returnType + " " + this.name + "(" ;
         for(JavaClass jc:params) {
             returnVale = returnVale.concat(jc + ", ");
         }
-        returnVale = returnVale.split(",")[0];
+        if(params.size()!=0)
+        returnVale = returnVale.substring(0, returnVale.length()-2);
         returnVale =returnVale.concat(")");
         return returnVale;
     }
-
 }
