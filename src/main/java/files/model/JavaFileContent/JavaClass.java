@@ -31,7 +31,7 @@ public class JavaClass{
             fields.add(new JavaField(fd));
         }
         for(MethodDeclaration md : cd.getMethods()){
-            JavaMethod method = new JavaMethod(md);
+            JavaMethod method = new JavaMethod(this, md);
             this.methods.add(method);
         }
     }
