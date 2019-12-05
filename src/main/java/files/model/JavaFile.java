@@ -160,7 +160,14 @@ public class JavaFile implements Comparator<JavaFile> {
     void convertImports(List<JavaFile> allFiles) throws FileNotFoundException {
         Map<String, JavaFile> projectFilesNames = new HashMap<>();
         for(JavaFile file: allFiles){
-            projectFilesNames.put(file.getPack() + "." + file.getClassName(),file);
+            String className =  "";
+            if(file.getClasses().size() == 0){
+                className = "";
+            }
+            else {
+                className = file.getClasses().get(0).getName();
+            }
+            projectFilesNames.put(file.getPack() + "." +className,file);
         }
         for(Import i:Parser.getImports(this)){
             JavaFile tmp = projectFilesNames.get(i.toString());

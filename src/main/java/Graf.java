@@ -5,33 +5,77 @@ import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Graf extends JApplet
 {
-    private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
+    private static final ArrayList<String> vs = new ArrayList<String>();
+    private static final ArrayList<String>is = new ArrayList<String>();
+    private static final ArrayList<Relationship> relationships = new ArrayList<>();
 
+    private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
 
-
-    public static void main(String[] args)
-    {
-       Graf applet = new Graf();
-        applet.init();
+    public final void draw(String title, boolean visible){
+        this.init();
 
         JFrame frame = new JFrame();
-        frame.getContentPane().add(applet);
-        frame.setTitle("grafy");
+        frame.getContentPane().add(this);
+        frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible(visible);
+    }
+
+    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
+
+        vs.clear();
+        is.clear();
+
+        for(int i = 0; i < fileName.size(); i++) {
+            vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
+            is.add("1");
+            relationships.add(relationship.get(i));
+        }
+
+        //calculate relationships count
+        for(Relationship rel : relationships) {
+            String name = rel.getName();
+
+            //find vs with this name
+            System.out.println("FROM: " + name);
+
+            Integer outCount = 0;
+            for(int i=0; i<rel.getDependencies().size(); i++){
+                outCount++;
+
+                String depName = rel.getDependencies().get(i);
+                System.out.println("DEP:\t" + depName);
+
+                Integer pos = Relationship.getIndexFromName(relationships, rel.getDependencies().get(i));
+                if(pos != -1) {
+                    relationships.get(pos).incrementInCount();
+                    pos++;
+                }
+            }
+            rel.addOutCount(outCount);
+
+            System.out.println("\n\n");
+        }
+
+        return new ArrayList[]{vs, is, relationships};
+
     }
 
     @Override
+
     public void init()
     {
         // create a JGraphT graph
         ListenableGraph<String, RelationshipEdge> g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(RelationshipEdge.class));
+
         // create a visualization using JGraph, via an adapter
         jgxAdapter = new JGraphXAdapter<>(g);
 
@@ -44,61 +88,35 @@ public class Graf extends JApplet
 
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
-        int n=10;
 
-        // add some sample data (graph manipulated via JGraphX)
-
-        ArrayList<String> vs= new ArrayList<String>();
-        ArrayList<String> is= new ArrayList<String>();
         //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
 
-        for(int i=0;i<n;i++){
-            vs.add("v"+i);
-            is.add(Integer.toString(i));
-            g.addVertex(vs.get(i));
+        //add vertices
+        for(Relationship rel : relationships) {
+            String name = rel.getName();
+            g.addVertex(name);
         }
-        for(int i=0;i<n-1;i++){
-           g.addEdge(vs.get(i),vs.get(i+1),new RelationshipEdge(is.get(i)));
-            g.addEdge(vs.get(i+1),vs.get(i),new RelationshipEdge(""));
-    }
 
-        // positioning via jgraphx layouts
+        //Add edges
+        for(Relationship rel : relationships) {
+            String name = rel.getName();
+
+            for(int i=0; i<rel.getDependencies().size(); i++){
+                String depName = rel.getDependencies().get(i);
+                g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+            }
+        }
+
+        // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
 
         // center the circle
-        int radius = 170;
+        int radius = 150;
         layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
         layout.setY0((DEFAULT_SIZE.height / 2.0) - radius);
         layout.setRadius(radius);
         layout.setMoveCircle(true);
 
         layout.execute(jgxAdapter.getDefaultParent());
-        // that's all there is to it!...
-    }
-}
-
-
-
-class RelationshipEdge
-        extends
-        DefaultEdge
-{
-    private String label;
-
-    public RelationshipEdge(String label)
-    {
-        this.label = label;
-    }
-
-
-    public String getLabel()
-    {
-        return label;
-    }
-
-    @Override
-    public String toString()
-    {
-        return  label;
     }
 }
