@@ -1,13 +1,10 @@
 import files.model.JavaFile;
-import files.model.JavaFileContent.JavaClass;
-import files.model.JavaFileContent.JavaMethod;
 import files.model.PackageFile;
 import files.service.ClassDeclaration;
 import files.service.MethodDeclaration;
 import files.service.Parser;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Map;
 
 public class RTeam {
@@ -15,7 +12,7 @@ public class RTeam {
     public static void main(String[] args){
         /*
 
-            OLD STUFF   q
+            OLD STUFF
 
             //List<JavaFileContent> list = JavaFileContent.getFilesFrom(JavaFileContent.getProjectPath());
             //PackageFile pack = new PackageFile(JavaFile.getProjectPath());
@@ -35,23 +32,23 @@ public class RTeam {
 
         */
 
-
-
         //moved main from Parser class to RTeam
+        PackageFile pf = new PackageFile(JavaFile.getProjectPath());
+
         try {
-            PackageFile pf = new PackageFile(JavaFile.getProjectPath());
             for (JavaFile jf : pf.getSubFiles()) {
+                System.out.println(jf.getName());
                 for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
                     System.out.println(c.getName());
                     for (MethodDeclaration md : c.getMethods()) {
-                        System.out.println("  "+md.getName());
+                        //System.out.println("  "+md.getName());
                         Map<String, String> lv = md.getLocalVariables();
                         for (String key : lv.keySet()) {
-                            System.out.println(String.format("    %s %s", lv.get(key), key));
+                          // System.out.println(String.format("    %s %s", lv.get(key), key));
                         }
                         Map<String, Integer> mc = md.getMethodCalls();
                         for (String key : mc.keySet()) {
-                            System.out.println(String.format("    %s (%s)", key, mc.get(key)));
+                            //System.out.println(String.format("    %s (%s)", key, mc.get(key)));
                         }
                     }
                 }
