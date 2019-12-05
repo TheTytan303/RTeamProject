@@ -5,6 +5,7 @@ import files.service.MethodDeclaration;
 import files.service.Parser;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class RTeam {
@@ -35,8 +36,12 @@ public class RTeam {
         //moved main from Parser class to RTeam
         PackageFile pf = new PackageFile(JavaFile.getProjectPath());
 
+        ArrayList<String> fileName = new ArrayList<>();
+        ArrayList<Long> fileSize = new ArrayList<>();
         try {
             for (JavaFile jf : pf.getSubFiles()) {
+                fileName.add(jf.getName());
+                fileSize.add(jf.getSize());
                 System.out.println(jf.getName());
                 for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
                     System.out.println(c.getName());
@@ -55,7 +60,10 @@ public class RTeam {
             }
         } catch (FileNotFoundException ignore) {}
 
-       Graf.draw("Grafy", true);
+
+        Graf applet = new Graf();
+        applet.importData(fileName, fileSize);
+        applet.draw("Grafy", true);
 
 
         /*

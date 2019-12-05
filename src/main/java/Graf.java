@@ -6,6 +6,7 @@ import org.jgrapht.graph.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Graf extends JApplet
 {
@@ -15,29 +16,25 @@ public class Graf extends JApplet
     private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
 
-    public static final void draw(String title, boolean visible){
-        Graf applet = new Graf();
-        importData();
-        applet.init();
+    public final void draw(String title, boolean visible){
+        this.init();
 
         JFrame frame = new JFrame();
-        frame.getContentPane().add(applet);
+        frame.getContentPane().add(this);
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(visible);
     }
 
-    public static final ArrayList[] importData() {
+    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize) {
 
         vs.clear();
         is.clear();
 
-        int n = 10;
-
-        for(int i=0; i<n; i++) {
-            vs.add("v"+i);
-            is.add(Integer.toString(i));
+        for(int i = 0; i < Math.ceil(Math.min(fileName.size(), fileSize.size())); i++) {
+            vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
+            is.add(String.valueOf(Math.random()));
         }
 
         return new ArrayList[]{vs, is};
