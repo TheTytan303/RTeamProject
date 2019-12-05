@@ -1,10 +1,11 @@
 package files.service;
 
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MethodDeclaration {
     private com.github.javaparser.ast.body.MethodDeclaration md;
@@ -47,6 +48,19 @@ public class MethodDeclaration {
             args.add(p.getType().asString());
         }
         return args;
+    }
+
+    /**
+     * @return Mapping: variable name -> variable type
+     */
+    public Map<String, String> getLocalVariables() {
+        Map<String, String> lv = new HashMap<>();
+        for (VariableDeclarationExpr vde : new ArrayList<>(this.md.findAll(VariableDeclarationExpr.class))) {
+            for (VariableDeclarator vd : vde.getVariables()) {
+                lv.put(vd.getName().getIdentifier(), vd.getType().asString());
+            }
+        }
+        return lv;
     }
 
     public Map<String, Integer> getMethodCalls() {

@@ -11,7 +11,6 @@ import files.model.PackageFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Parser {
 
@@ -136,11 +135,23 @@ public class Parser {
             PackageFile pf = new PackageFile(JavaFile.getProjectPath());
             for (JavaFile jf : pf.getSubFiles()) {
                 for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
-                    System.out.println(c);
+                    System.out.println(c.getName());
+                    for (MethodDeclaration md : c.getMethods()) {
+                        System.out.println("  "+md.getName());
+                        Map<String, String> lv = md.getLocalVariables();
+                        for (String key : lv.keySet()) {
+                            System.out.println(String.format("    %s %s", lv.get(key), key));
+                        }
+                        Map<String, Integer> mc = md.getMethodCalls();
+                        for (String key : mc.keySet()) {
+                            System.out.println(String.format("    %s (%s)", key, mc.get(key)));
+                        }
+                    }
                 }
             }
         } catch (FileNotFoundException ignore) {}
 
+        /*
         Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
         for (String k : g.keySet()) {
             System.out.println(String.format("'%s' imports: (%d)", k, g.get(k).size()));
@@ -157,5 +168,6 @@ public class Parser {
                 System.out.println(String.format("\t%s (%d)", callee, calls.get(callee)));
             }
         }
+        */
     }
 }
