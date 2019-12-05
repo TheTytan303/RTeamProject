@@ -9,6 +9,8 @@ public class Relationship {
     public Relationship(String thisName, ArrayList<String> name) {
         this.thisName = thisName;
         this.name = name;
+        this.inCount = 0;
+        this.outCount = 0;
     }
 
     public String getThisName() {
@@ -35,11 +37,24 @@ public class Relationship {
         this.inCount = inCount;
     }
 
+    public void incrementInCount() {
+        this.inCount++;
+    }
+
     public Integer getOutCount() {
         return outCount;
     }
 
     public void setOutCount(Integer outCount) {
         this.outCount = outCount;
+    }
+
+    public static Integer getIndexFromName(ArrayList<Relationship> relationships, String name) {
+        for(int i=0; i<relationships.size(); i++) {
+            if(relationships.get(i).getThisName().compareTo(name) == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

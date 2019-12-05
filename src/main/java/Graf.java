@@ -36,8 +36,34 @@ public class Graf extends JApplet
 
         for(int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
-            is.add("1");
             relationships.add(relationship.get(i));
+        }
+
+        //calculate relationships count
+        for(Relationship rel : relationships) {
+            String name = rel.getThisName();
+
+            //find vs with this name
+            System.out.println("FROM: " + name);
+
+            Integer inCount = 0;
+            for(int i=0; i<rel.getName().size(); i++){
+
+                String depName = rel.getName().get(i);
+                System.out.println("DEP:\t" + depName);
+
+                Integer pos = Relationship.getIndexFromName(relationships, rel.getName().get(i));
+                if(pos != -1) {
+                    relationships.get(pos).incrementInCount();
+                    pos++;
+                }
+            }
+
+            System.out.println("\n\n");
+        }
+
+        for(int i = 0; i < fileName.size(); i++) {
+            is.add("1");
         }
 
         return new ArrayList[]{vs, is, relationships};
@@ -74,25 +100,13 @@ public class Graf extends JApplet
             g.addVertex(vs.get(i));
         }
 
-        for(Relationship rel : relationships) {
-            String name = rel.getThisName();
-
-            //find vs with this name
-            System.out.println("FROM: " + name);
-            for(int i=0; i<rel.getName().size(); i++){
-
-                System.out.println("DEP:\t" + rel.getName().get(i));
-                //System.out.println("\tCount: " + rel.getCount().get(i));
-            }
-
-            System.out.println("\n\n");
-        }
 
 
-        for(int i=0;i<n-1;i++){
+
+       /* for(int i=0;i<n-1;i++){
            g.addEdge( vs.get(i), vs.get(i+1), new RelationshipEdge(is.get(i)) );
            g.addEdge( vs.get(i+1), vs.get(i), new RelationshipEdge("") );
-        }
+        }*/
 
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
