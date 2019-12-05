@@ -14,24 +14,24 @@ public class Graf extends JApplet
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
 
 
-    public static void main(String[] args)
-    {
-       Graf applet = new Graf();
+    public static final void draw(String title, boolean visible){
+        Graf applet = new Graf();
         applet.init();
 
         JFrame frame = new JFrame();
         frame.getContentPane().add(applet);
-        frame.setTitle("grafy");
+        frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setVisible(true);
+        frame.setVisible(visible);
     }
-
     @Override
+
     public void init()
     {
         // create a JGraphT graph
         ListenableGraph<String, RelationshipEdge> g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(RelationshipEdge.class));
+
         // create a visualization using JGraph, via an adapter
         jgxAdapter = new JGraphXAdapter<>(g);
 
@@ -57,10 +57,11 @@ public class Graf extends JApplet
             is.add(Integer.toString(i));
             g.addVertex(vs.get(i));
         }
+
         for(int i=0;i<n-1;i++){
            g.addEdge(vs.get(i),vs.get(i+1),new RelationshipEdge(is.get(i)));
-            g.addEdge(vs.get(i+1),vs.get(i),new RelationshipEdge(""));
-    }
+           g.addEdge(vs.get(i+1),vs.get(i),new RelationshipEdge(""));
+        }
 
         // positioning via jgraphx layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
@@ -77,8 +78,6 @@ public class Graf extends JApplet
     }
 }
 
-
-
 class RelationshipEdge
         extends
         DefaultEdge
@@ -89,7 +88,6 @@ class RelationshipEdge
     {
         this.label = label;
     }
-
 
     public String getLabel()
     {
