@@ -42,18 +42,18 @@ public class Graf extends JApplet
 
         //calculate relationships count
         for(Relationship rel : relationships) {
-            String name = rel.getThisName();
+            String name = rel.getName();
 
             //find vs with this name
             System.out.println("FROM: " + name);
 
             Integer inCount = 0;
-            for(int i=0; i<rel.getName().size(); i++){
+            for(int i=0; i<rel.getDependencies().size(); i++){
 
-                String depName = rel.getName().get(i);
+                String depName = rel.getDependencies().get(i);
                 System.out.println("DEP:\t" + depName);
 
-                Integer pos = Relationship.getIndexFromName(relationships, rel.getName().get(i));
+                Integer pos = Relationship.getIndexFromName(relationships, rel.getDependencies().get(i));
                 if(pos != -1) {
                     relationships.get(pos).incrementInCount();
                     pos++;
@@ -95,21 +95,21 @@ public class Graf extends JApplet
 
         //add Vertices
         for(Relationship rel : relationships) {
-            String name = rel.getThisName();
+            String name = rel.getName();
             g.addVertex(name);
         }
 
 
         //Add edges
         for(Relationship rel : relationships) {
-            String name = rel.getThisName();
+            String name = rel.getName();
 
-            for(int i=0; i<rel.getName().size(); i++){
-                String depName = rel.getName().get(i);
+            for(int i=0; i<rel.getDependencies().size(); i++){
+                String depName = rel.getDependencies().get(i);
                 try {
                     g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
                 } catch (Exception e) {
-                    
+
                 }
             }
         }

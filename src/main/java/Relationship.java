@@ -1,40 +1,28 @@
 import java.util.ArrayList;
 
 public class Relationship {
-    private String thisName;
-    private ArrayList<String> name;
+    private String name;
+    private ArrayList<String> dependencies;
     private Integer inCount;
     private Integer outCount;
 
-    public Relationship(String thisName, ArrayList<String> name) {
-        this.thisName = thisName;
+    public Relationship(String name, ArrayList<String> dependencies) {
         this.name = name;
+        this.dependencies = dependencies;
         this.inCount = 0;
         this.outCount = 0;
     }
 
-    public String getThisName() {
-        return thisName;
-    }
-
-    public void setThisName(String thisName) {
-        this.thisName = thisName;
-    }
-
-    public ArrayList<String> getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(ArrayList<String> name) {
-        this.name = name;
+    public ArrayList<String> getDependencies() {
+        return dependencies;
     }
 
     public Integer getInCount() {
         return inCount;
-    }
-
-    public void setInCount(Integer inCount) {
-        this.inCount = inCount;
     }
 
     public void incrementInCount() {
@@ -45,13 +33,13 @@ public class Relationship {
         return outCount;
     }
 
-    public void setOutCount(Integer outCount) {
-        this.outCount = outCount;
+    public void incrementOutCount() {
+        this.outCount++;
     }
 
     public static Integer getIndexFromName(ArrayList<Relationship> relationships, String name) {
-        for(int i=0; i<relationships.size(); i++) {
-            if(relationships.get(i).getThisName().compareTo(name) == 0) {
+        for(int i = 0; i < relationships.size(); i++) {
+            if(relationships.get(i).getName().compareTo(name) == 0) {
                 return i;
             }
         }
