@@ -2,6 +2,9 @@ package files.model;
 
 
 
+import files.model.JavaFileContent.JavaClass;
+import files.model.JavaFileContent.JavaMethod;
+import files.service.ClassDeclaration;
 import files.service.Import;
 import files.service.Parser;
 
@@ -11,12 +14,10 @@ import java.util.*;
 public class JavaFile implements Comparator<JavaFile> {
     private String path;
     private String pack;
-    private String className;
     private Long size;
     private PackageFile parent;
     private List<JavaFile> imports;
-    private List<Import> imports2;
-
+    private List<JavaClass> javaClass;
 
 
     public JavaFile(String path){
@@ -28,12 +29,20 @@ public class JavaFile implements Comparator<JavaFile> {
         this.imports = new ArrayList<>();
         try {
             this.pack = Parser.getPackage(this).orElse("?");
-            imports2 = new ArrayList<>(Parser.getImports(this));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         String[] tmp = getName().split("\\.");
-        this.className = tmp[0];
+        //this.className = tmp[0];
+        try {
+            Set<ClassDeclaration> set = Parser.getClassesOrInterfaces(this);
+            javaClass = new ArrayList<>();
+            for(ClassDeclaration cd: set){
+                javaClass.add(new JavaClass(this, cd));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     //----------------------------------------------------------------------------------Getters
@@ -74,9 +83,19 @@ public class JavaFile implements Comparator<JavaFile> {
         }
     }
     public String getClassName(){
-        return className;
+        return javaClass.toString();
     }
     public String getPack(){return this.pack;}
+    public List<JavaMethod> getMethods(){
+        List<JavaMethod> returnVale = new ArrayList<>();
+        for(JavaClass jc: javaClass){
+            returnVale.addAll(jc.getMethods());
+        }
+        return returnVale;
+    }
+    public List<JavaClass> getClasses(){
+        return javaClass;
+    }
     //----------------------------------------------------------------------------------Setters
     public void setImports(List<JavaFile> imports) {
         this.imports = imports;
@@ -99,7 +118,6 @@ public class JavaFile implements Comparator<JavaFile> {
     public String toString() {
         return "["+this.getSize()+"B]: "+this.getClassName();
     }
-
     //----------------------------------------------------------------------------------Static
     //poberz listę plików w folderze (i jego podfolderach) o podanej ścieżce (path)
     public static List<JavaFile> getFilesFrom(String path){
@@ -138,17 +156,22 @@ public class JavaFile implements Comparator<JavaFile> {
             }
         }
     }
-    //----------------------------------------------------------------------------------Private
-    void convertImports(List<JavaFile> allFiles){
+    //----------------------------------------------------------------------------------Package-Private
+    void convertImports(List<JavaFile> allFiles) throws FileNotFoundException {
         Map<String, JavaFile> projectFilesNames = new HashMap<>();
         for(JavaFile file: allFiles){
-            projectFilesNames.put(file.getPack() + "." + file.className,file);
+            projectFilesNames.put(file.getPack() + "." + file.getClassName(),file);
         }
-        for(Import i:imports2){
+        for(Import i:Parser.getImports(this)){
             JavaFile tmp = projectFilesNames.get(i.toString());
             if(tmp != null){
                 this.imports.add(tmp);
             }
         }
+    }
+    public String getFullName(){
+        String returnVale = parent.getFullName() + "\\" + this.getName();
+
+        return returnVale;
     }
 }
