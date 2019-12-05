@@ -125,7 +125,7 @@ public class Parser {
         CompilationUnit cu = StaticJavaParser.parse(content);
         Set<ClassOrInterfaceDeclaration> cd = new HashSet<>(cu.findAll(ClassOrInterfaceDeclaration.class));
         for (ClassOrInterfaceDeclaration c : cd) {
-            cds.add(new ClassDeclaration(c, getPackage(jf)));
+            cds.add(new ClassDeclaration(c, jf));
         }
         return cds;
     }
