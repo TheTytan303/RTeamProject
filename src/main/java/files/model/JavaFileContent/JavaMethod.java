@@ -45,8 +45,8 @@ public class JavaMethod{
         this.params = new ArrayList<>();
         this.returnType = new JavaClass(md.getReturnType());
         this.calledMethodsNames = md.getMethodCalls();
-
         this.calledMethods = new HashMap<>();
+
         this.parent = parent;
         for(String s: md.getArgumentTypeNames()){
             this.params.add(new JavaClass(s));
