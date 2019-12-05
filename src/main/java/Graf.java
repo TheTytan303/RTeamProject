@@ -5,6 +5,7 @@ import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -12,6 +13,7 @@ public class Graf extends JApplet
 {
     private static final ArrayList<String> vs = new ArrayList<String>();
     private static final ArrayList<String> is = new ArrayList<String>();
+    private static final ArrayList<Relationship> relationships = new ArrayList<>();
 
     private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
@@ -27,17 +29,18 @@ public class Graf extends JApplet
         frame.setVisible(visible);
     }
 
-    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize) {
+    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
 
         vs.clear();
         is.clear();
 
-        for(int i = 0; i < Math.ceil(Math.min(fileName.size(), fileSize.size())); i++) {
+        for(int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
-            is.add(String.valueOf(Math.random()));
+            is.add("1");
+            relationships.add(relationship.get(i));
         }
 
-        return new ArrayList[]{vs, is};
+        return new ArrayList[]{vs, is, relationships};
 
     }
 
@@ -70,6 +73,21 @@ public class Graf extends JApplet
         for(int i=0;i<n;i++){
             g.addVertex(vs.get(i));
         }
+
+        for(Relationship rel : relationships) {
+            String name = rel.getThisName();
+
+            //find vs with this name
+            System.out.println("FROM: " + name);
+            for(int i=0; i<rel.getName().size(); i++){
+
+                System.out.println("DEP:\t" + rel.getName().get(i));
+                //System.out.println("\tCount: " + rel.getCount().get(i));
+            }
+
+            System.out.println("\n\n");
+        }
+
 
         for(int i=0;i<n-1;i++){
            g.addEdge( vs.get(i), vs.get(i+1), new RelationshipEdge(is.get(i)) );

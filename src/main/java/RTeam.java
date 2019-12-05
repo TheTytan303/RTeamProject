@@ -38,15 +38,26 @@ public class RTeam {
 
         ArrayList<String> fileName = new ArrayList<>();
         ArrayList<Long> fileSize = new ArrayList<>();
-        try {
+        ArrayList<Relationship> relationships = new ArrayList<>();
+        try{
             for (JavaFile jf : pf.getSubFiles()) {
                 fileName.add(jf.getName());
                 fileSize.add(jf.getSize());
-                System.out.println(jf.getName());
+
+                ArrayList<String> relationshipNames = new ArrayList<>();
+                for(JavaFile a : jf.getImports()) {
+                   relationshipNames.add(a.getName());
+                }
+                relationships.add(new Relationship(jf.getName(), relationshipNames));
+
+              //  System.out.println(jf.getName());
                 for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
-                    System.out.println(c.getName());
-                    for (MethodDeclaration md : c.getMethods()) {
-                        //System.out.println("  "+md.getName());
+                    //classes in file
+                    //System.out.println(c.getName());
+
+
+                   /* for (MethodDeclaration md : c.getMethods()) {
+                    //    System.out.println("  "+md.getName());
                         Map<String, String> lv = md.getLocalVariables();
                         for (String key : lv.keySet()) {
                           // System.out.println(String.format("    %s %s", lv.get(key), key));
@@ -55,16 +66,15 @@ public class RTeam {
                         for (String key : mc.keySet()) {
                             //System.out.println(String.format("    %s (%s)", key, mc.get(key)));
                         }
-                    }
+                    }*/
                 }
             }
         } catch (FileNotFoundException ignore) {}
 
 
         Graf applet = new Graf();
-        applet.importData(fileName, fileSize);
-        applet.draw("Grafy", true);
-
+        applet.importData(fileName, fileSize, relationships);
+        applet.draw("Dependencies", true);
 
         /*
         Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
