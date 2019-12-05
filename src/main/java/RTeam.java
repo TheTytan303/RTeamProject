@@ -1,12 +1,12 @@
+import Graph.Graph;
+import Graph.Relationship;
 import files.model.JavaFile;
 import files.model.PackageFile;
 import files.service.ClassDeclaration;
-import files.service.MethodDeclaration;
 import files.service.Parser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class RTeam {
 
@@ -39,7 +39,9 @@ public class RTeam {
         ArrayList<String> fileName = new ArrayList<>();
         ArrayList<Long> fileSize = new ArrayList<>();
         ArrayList<Relationship> relationships = new ArrayList<>();
+
         try{
+
             for (JavaFile jf : pf.getSubFiles()) {
                 fileName.add(jf.getName());
                 fileSize.add(jf.getSize());
@@ -72,7 +74,7 @@ public class RTeam {
         } catch (FileNotFoundException ignore) {}
 
 
-        Graf applet = new Graf();
+        Graph applet = new Graph();
         applet.importData(fileName, fileSize, relationships);
         applet.draw("Dependencies", true);
 
