@@ -47,8 +47,9 @@ public class Graf extends JApplet
             //find vs with this name
             System.out.println("FROM: " + name);
 
-            Integer inCount = 0;
+            Integer outCount = 0;
             for(int i=0; i<rel.getDependencies().size(); i++){
+                outCount++;
 
                 String depName = rel.getDependencies().get(i);
                 System.out.println("DEP:\t" + depName);
@@ -59,6 +60,7 @@ public class Graf extends JApplet
                     pos++;
                 }
             }
+            rel.addOutCount(outCount);
 
             System.out.println("\n\n");
         }
@@ -87,18 +89,13 @@ public class Graf extends JApplet
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
-
-
-        // add some sample data (graph manipulated via JGraphX)
-
         //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
 
-        //add Vertices
+        //add vertices
         for(Relationship rel : relationships) {
             String name = rel.getName();
             g.addVertex(name);
         }
-
 
         //Add edges
         for(Relationship rel : relationships) {
@@ -106,23 +103,10 @@ public class Graf extends JApplet
 
             for(int i=0; i<rel.getDependencies().size(); i++){
                 String depName = rel.getDependencies().get(i);
-                try {
-                    g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
-                } catch (Exception e) {
-
-                }
+                g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
             }
         }
 
-
-
-       /*
-        int n = vs.size();
-        for(int i=0;i<n-1;i++){
-           g.addEdge( vs.get(i), vs.get(i+1), new RelationshipEdge("Waga"));
-           g.addEdge( vs.get(i+1), vs.get(i), new RelationshipEdge("") );
-        }
-*/
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
 

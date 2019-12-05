@@ -37,6 +37,10 @@ public class Relationship {
         this.outCount++;
     }
 
+    public void addOutCount(Integer outCount) {
+        this.outCount += outCount;
+    }
+
     public static Integer getIndexFromName(ArrayList<Relationship> relationships, String name) {
         for(int i = 0; i < relationships.size(); i++) {
             if(relationships.get(i).getName().compareTo(name) == 0) {
