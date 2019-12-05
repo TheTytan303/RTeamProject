@@ -12,7 +12,7 @@ import java.util.Random;
 public class Graf extends JApplet
 {
     private static final ArrayList<String> vs = new ArrayList<String>();
-    private static final ArrayList<String> is = new ArrayList<String>();
+    private static final ArrayList<String>is = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships = new ArrayList<>();
 
     private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
@@ -36,6 +36,7 @@ public class Graf extends JApplet
 
         for(int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
+            is.add("1");
             relationships.add(relationship.get(i));
         }
 
@@ -62,10 +63,6 @@ public class Graf extends JApplet
             System.out.println("\n\n");
         }
 
-        for(int i = 0; i < fileName.size(); i++) {
-            is.add("1");
-        }
-
         return new ArrayList[]{vs, is, relationships};
 
     }
@@ -90,29 +87,47 @@ public class Graf extends JApplet
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
-        int n = Math.min(vs.size(), is.size());
+
 
         // add some sample data (graph manipulated via JGraphX)
 
         //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
 
-        for(int i=0;i<n;i++){
-            g.addVertex(vs.get(i));
+        //add Vertices
+        for(Relationship rel : relationships) {
+            String name = rel.getThisName();
+            g.addVertex(name);
+        }
+
+
+        //Add edges
+        for(Relationship rel : relationships) {
+            String name = rel.getThisName();
+
+            for(int i=0; i<rel.getName().size(); i++){
+                String depName = rel.getName().get(i);
+                try {
+                    g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+                } catch (Exception e) {
+                    
+                }
+            }
         }
 
 
 
-
-       /* for(int i=0;i<n-1;i++){
-           g.addEdge( vs.get(i), vs.get(i+1), new RelationshipEdge(is.get(i)) );
+       /*
+        int n = vs.size();
+        for(int i=0;i<n-1;i++){
+           g.addEdge( vs.get(i), vs.get(i+1), new RelationshipEdge("Waga"));
            g.addEdge( vs.get(i+1), vs.get(i), new RelationshipEdge("") );
-        }*/
-
+        }
+*/
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
 
         // center the circle
-        int radius = 170;
+        int radius = 150;
         layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
         layout.setY0((DEFAULT_SIZE.height / 2.0) - radius);
         layout.setRadius(radius);
