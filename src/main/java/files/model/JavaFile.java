@@ -5,6 +5,7 @@ package files.model;
 import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
 import files.service.ClassDeclaration;
+import files.service.EnumDeclaration;
 import files.service.Import;
 import files.service.Parser;
 
@@ -34,9 +35,13 @@ public class JavaFile implements Comparator<JavaFile> {
         }
         try {
             Set<ClassDeclaration> set = Parser.getClassesOrInterfaces(this);
+            Set<EnumDeclaration> enums = Parser.getEnumDeclarations(this);
             javaClass = new ArrayList<>();
             for(ClassDeclaration cd: set){
                 javaClass.add(new JavaClass(this, cd));
+            }
+            for(EnumDeclaration ed: enums){
+                javaClass.add(new JavaClass(this, ed));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

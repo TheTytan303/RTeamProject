@@ -1,6 +1,7 @@
 package files.model.JavaFileContent;
 import files.model.JavaFile;
 import files.service.ClassDeclaration;
+import files.service.EnumDeclaration;
 import files.service.FieldDeclaration;
 import files.service.MethodDeclaration;
 
@@ -42,6 +43,18 @@ public class JavaClass implements JavaEntity{
     public JavaClass(String name){
         this.name = name;
     }
+
+    public JavaClass(JavaFile parent, EnumDeclaration ed) {
+        this.name = ed.getName();
+        this.parent = parent;
+        methods = new ArrayList<>();
+        fields = new ArrayList<>();
+        for(MethodDeclaration md : ed.getMethods()){
+            JavaMethod method = new JavaMethod(this, md);
+            this.methods.add(method);
+        }
+    }
+
     //----------------------------------------------------------------------------------Getters
     public String getName() {return name; }
     public String getCode(){return code;}
