@@ -1,10 +1,12 @@
 package files.service;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import files.model.JavaFile;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClassDeclaration {
     private JavaFile sourceFile;
@@ -24,6 +26,10 @@ public class ClassDeclaration {
         for (com.github.javaparser.ast.body.MethodDeclaration md : this.coid.getMethods()) {
             this.methods.add(new MethodDeclaration(md));
         }
+        for (ConstructorDeclaration cd : this.coid.getConstructors()) {
+            this.methods.add(new MethodDeclaration(cd, this.getName()));
+        }
+
         this.methodsByName = new HashMap<>();
         for (MethodDeclaration md : this.methods) {
             this.methodsByName.put(md.getName(), md);
@@ -59,6 +65,10 @@ public class ClassDeclaration {
 
     public String getName() {
         return this.coid.getName().asString();
+    }
+
+    public Set<MethodDeclaration> getConstructors() {
+        return getMethods().stream().filter(md -> md.getName().equals(this.getName())).collect(Collectors.toSet());
     }
 
     public Set<MethodDeclaration> getMethods() {
