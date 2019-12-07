@@ -12,9 +12,9 @@ public class PredefinedJavaClass{
 
     /**
      * Always return the same class for same name, f.e:
-     * input = "Integer" -> returns Integer1;
-     * input = "int" -> returns Integer2;
-     * Integer1 and Integer2 are references to the same object, so (Integer1 == Integer2) is Always true;
+     * name = "Integer" -> returns Integer1;
+     * name = "int" -> returns Integer2;
+     * Integer1 and Integer2 are references to the same object, so (Integer1 == Integer2) is always true;
      *
      * Throws ClassNotFoundException if there is no predefined class with specified name, f.e:
      * input = "City" -> throws ClassNotFoundException;
@@ -66,6 +66,22 @@ public class PredefinedJavaClass{
                     predefined.put("short", tmp);
                     predefined.put("Short", tmp);
                     break;
+                case "Dimension":
+                    tmp = PredefinedJavaClass.Dimension();
+                    predefined.put("Dimension", tmp);
+                    break;
+                case "Boolean":
+                    tmp = PredefinedJavaClass.Boolean();
+                    predefined.put("Boolean", tmp);
+                    break;
+                case "File":
+                    tmp = PredefinedJavaClass.File();
+                    predefined.put("File", tmp);
+                    break;
+                case "Name":
+                    tmp = PredefinedJavaClass.Name();
+                    predefined.put("Name", tmp);
+                    break;
                 default:
                     ClassNotFoundException exception = new ClassNotFoundException("No predefined class named \""+ name + "\" found");
                     throw exception;
@@ -102,6 +118,22 @@ public class PredefinedJavaClass{
     }
     private static JavaClass Float(){
         JavaClass Integer = new JavaClass("Float");
+        return Integer;
+    }
+    private static JavaClass Dimension(){
+        JavaClass Integer = new JavaClass("Dimension");
+        return Integer;
+    }
+    private static JavaClass Boolean(){
+        JavaClass Integer = new JavaClass("Boolean");
+        return Integer;
+    }
+    private static JavaClass File(){
+        JavaClass Integer = new JavaClass("File");
+        return Integer;
+    }
+    private static JavaClass Name(){
+        JavaClass Integer = new JavaClass("Name");
         return Integer;
     }
 }

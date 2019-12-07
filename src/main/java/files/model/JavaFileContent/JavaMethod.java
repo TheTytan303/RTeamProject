@@ -12,7 +12,7 @@ import java.util.Map;
 import static files.service.AccessModifier.*;
 //import static files.service.AccessModifier.PUBLIC;
 
-public class JavaMethod{
+public class JavaMethod implements JavaEntity{
     private String name;
     private List<JavaClass> params;
     private List<JavaField> localVariables;
@@ -27,20 +27,7 @@ public class JavaMethod{
 
     public JavaMethod(JavaClass parent, MethodDeclaration md){
         this.name = md.getName();
-        switch(md.getAccessModifier()){
-            case PUBLIC:
-                this.access = Access.type_public;
-                break;
-            case DEFAULT:
-                this.access = Access.type_package_private;
-                break;
-            case PRIVATE:
-                this.access = Access.type_private;
-                break;
-            case PROTECTED:
-                this.access = Access.type_protected;
-                break;
-        }
+        this.access = accesTranslate(md.getAccessModifier());
         this.isStatic = md.isStatic();
         this.isSynchronized = md.isSynchronized();
         this.params = new ArrayList<>();
@@ -48,8 +35,11 @@ public class JavaMethod{
         this.calledMethodsNames = md.getMethodCalls();
         this.calledMethods = new HashMap<>();
         this.localVariables = new ArrayList<>();
-        for(Map.Entry<String, String> entry : md.getLocalVariables().entrySet()){
-            System.out.println("");
+        this.localVariables.add(new JavaField(Access.type_private, parent, "this"));
+        Map<String, String> entry2 = md.getLocalVariables();
+        for(Map.Entry<String, String> entry : entry2.entrySet()){
+            this.localVariables.add(new JavaField(Access.type_private, entry.getValue(), entry.getKey()));
+            //System.out.println("");
         }
         this.parent = parent;
         for(String s: md.getArgumentTypeNames()){
@@ -60,13 +50,46 @@ public class JavaMethod{
         String returnVale = ""+parent.getFullName()+"|"+this;
         return returnVale;
     }
-    public void convertMethods(List<JavaMethod> allMethods){
-        Map<String, JavaMethod> map = new HashMap<>();
-        for(JavaMethod m: allMethods){
-            map.put(m.getFullName(), m);
-        }
+    public String getName(){
+        return this.name;
+    }
+    public Map<JavaMethod, Integer> getCalledMethod(){
+        return this.calledMethods;
+    }
+    public void convertMethods(){
         for (Map.Entry<String, Integer> entry : calledMethodsNames.entrySet()){
-            String s = entry.getKey();
+            String fieldName;
+            String methodName;
+            if(entry.getKey().contains(".")){
+                fieldName = entry.getKey().split("\\.")[0];
+                methodName = entry.getKey().split("\\.")[1];
+            }else{
+                fieldName = "this";
+                methodName = entry.getKey();
+            }
+            for(JavaField jf: localVariables){
+                if(jf.getName().equals(fieldName)){
+                    JavaClass fieldClass = jf.getType();
+                    if(fieldClass != null)
+                    {
+                        if(calledMethods.containsKey(fieldClass.searchForMethod(methodName))){
+                            Integer i =calledMethods.get(fieldClass.searchForMethod(methodName));
+                            this.calledMethods.put(fieldClass.searchForMethod(methodName),(i+entry.getValue()));
+                        }
+                        else {
+                            this.calledMethods.put(fieldClass.searchForMethod(methodName),entry.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        System.out.print("");
+    }
+    void convertLocalVariables(List<JavaClass> allClasses){
+        for(JavaField jf: localVariables){
+            if(jf.getType() == null){
+                jf.searchForType(allClasses);
+            }
         }
     }
 
@@ -79,6 +102,24 @@ public class JavaMethod{
         if(params.size()!=0)
         returnVale = returnVale.substring(0, returnVale.length()-2);
         returnVale =returnVale.concat(")");
+        return returnVale;
+    }
+    static Access accesTranslate(AccessModifier access){
+        Access returnVale = Access.type_package_private;
+        switch(access){
+            case PUBLIC:
+                returnVale = Access.type_public;
+                break;
+            case DEFAULT:
+                returnVale = Access.type_package_private;
+                break;
+            case PRIVATE:
+                returnVale = Access.type_private;
+                break;
+            case PROTECTED:
+                returnVale = Access.type_protected;
+                break;
+        }
         return returnVale;
     }
 }

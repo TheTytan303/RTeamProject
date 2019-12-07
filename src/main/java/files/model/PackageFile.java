@@ -78,9 +78,12 @@ public class PackageFile {
                 e.printStackTrace();
             }
         }
+        for(JavaClass jc: getSubClasses()){
+            jc.convertFields(getSubClasses());
+        }
         List<JavaMethod> methods = getSubMethods();
         for(JavaMethod m : methods){
-            m.convertMethods(methods);
+            m.convertMethods();
         }
     }
 
