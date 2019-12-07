@@ -17,7 +17,7 @@ public class Parser {
     /**
      * Parses the given file and returns the declared package name.
      * @param jf JavaFile
-     * @return Name of the package
+     * @return Name of the package (may be absent in the file, hence optional).
      * @throws FileNotFoundException
      */
     public static Optional<String> getPackage(JavaFile jf) throws FileNotFoundException {
@@ -30,7 +30,7 @@ public class Parser {
     /**
      * Gathers the imports in given file
      * @param jf JavaFile
-     * @return Set of Imports
+     * @return Set of Imports in the file.
      * @throws FileNotFoundException
      */
     public static Set<Import> getImports(JavaFile jf) throws FileNotFoundException {
@@ -41,7 +41,7 @@ public class Parser {
             Name importName = id.getName();
             String fullImport = importName.asString();
             Optional<Name> qualifier = importName.getQualifier();
-            if (id.isAsterisk() || !qualifier.isPresent()) {
+            if (id.isAsterisk() || qualifier.isEmpty()) {
                 imports.add(new Import(fullImport));
             } else {
                 String fromPackage = qualifier.get().asString();
@@ -101,7 +101,7 @@ public class Parser {
     /**
      * Constructs a mapping: package imports a set of packages; Map<String, Set<String>>
      * @param path directory to be scanned
-     * @return Mapping
+     * @return Mapping: package -> imported packages
      */
     public static Map<String, Set<String>> package_graph(String path) {
         Map<String, Set<String>> g = new HashMap<>();
@@ -112,7 +112,7 @@ public class Parser {
      * Constructs a mapping: method calls other methods; the inner map
      * contains the calledfunction and the number of times it was called
      * @param path
-     * @return
+     * @return Mapping: Method -> (called Method -> number of times called)
      */
     public static Map<String, Map<String, Integer>> call_graph(String path) {
         Map<String, Map<String, Integer>> g = new HashMap<>();
@@ -128,5 +128,16 @@ public class Parser {
             cds.add(new ClassDeclaration(c, jf));
         }
         return cds;
+    }
+
+    public static Set<EnumDeclaration> getEnumDeclarations(JavaFile jf) throws FileNotFoundException {
+        Set<EnumDeclaration> enums = new HashSet<>();
+        String content = jf.getContent();
+        CompilationUnit cu = StaticJavaParser.parse(content);
+        Set<com.github.javaparser.ast.body.EnumDeclaration> cd = new HashSet<>(cu.findAll(com.github.javaparser.ast.body.EnumDeclaration.class));
+        for (com.github.javaparser.ast.body.EnumDeclaration ed : cd) {
+            enums.add(new EnumDeclaration(ed));
+        }
+        return enums;
     }
 }
