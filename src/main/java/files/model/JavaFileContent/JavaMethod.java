@@ -15,6 +15,7 @@ import static files.service.AccessModifier.*;
 public class JavaMethod{
     private String name;
     private List<JavaClass> params;
+    private List<JavaField> localVariables;
     private Map<String, Integer> calledMethodsNames;
     private Map<JavaMethod, Integer> calledMethods;
     private JavaClass returnType;
@@ -46,7 +47,10 @@ public class JavaMethod{
         this.returnType = new JavaClass(md.getReturnType());
         this.calledMethodsNames = md.getMethodCalls();
         this.calledMethods = new HashMap<>();
-
+        this.localVariables = new ArrayList<>();
+        for(Map.Entry<String, String> entry : md.getLocalVariables().entrySet()){
+            System.out.println("");
+        }
         this.parent = parent;
         for(String s: md.getArgumentTypeNames()){
             this.params.add(new JavaClass(s));
@@ -56,14 +60,14 @@ public class JavaMethod{
         String returnVale = ""+parent.getFullName()+"|"+this;
         return returnVale;
     }
-    void convertMethods(List<JavaMethod> allMethods){
+    public void convertMethods(List<JavaMethod> allMethods){
         Map<String, JavaMethod> map = new HashMap<>();
         for(JavaMethod m: allMethods){
-            map.put(m.parent + "\\\\"+m.name, m);
+            map.put(m.getFullName(), m);
         }
-        //for(String methodName: calledMethodsNames){
-        //    System.out.println(methodName);
-        //}
+        for (Map.Entry<String, Integer> entry : calledMethodsNames.entrySet()){
+            String s = entry.getKey();
+        }
     }
 
     @Override

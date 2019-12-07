@@ -15,6 +15,7 @@ public class JavaClass{
     private JavaFile parent;
     private String code;
 
+    protected JavaClass(){};
     public JavaClass(JavaFile parent, String name, String code){
         this.code = code;
         this.name = name;
