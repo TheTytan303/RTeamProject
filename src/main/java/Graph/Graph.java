@@ -1,3 +1,5 @@
+package Graph;
+
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 import org.jgrapht.*;
@@ -5,11 +7,9 @@ import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Graf extends JApplet
+public class Graph extends JApplet
 {
     private static final ArrayList<String> vs = new ArrayList<String>();
     private static final ArrayList<String>is = new ArrayList<String>();

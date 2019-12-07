@@ -1,11 +1,17 @@
+import Graph.Graph;
+import Graph.Relationship;
 import files.model.JavaFile;
 import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
 import files.model.JavaFileContent.PredefinedJavaClass;
 import files.model.PackageFile;
 
-import java.util.List;
-import java.util.Map;
+import files.service.ClassDeclaration;
+import files.service.Parser;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
 
 public class RTeam {
 
@@ -15,33 +21,17 @@ public class RTeam {
         List<JavaFile> files = pack.getSubFiles();
         Map<JavaMethod, Integer> map = classes.get(3).getMethodsCall();
 
-
-
-
-
-
+        ArrayList<String> fileName = new ArrayList<>();
+        ArrayList<Long> fileSize = new ArrayList<>();
+        ArrayList<Relationship> relationships = new ArrayList<>();
+        try{
+            for (JavaFile jf : pf.getSubFiles()) {
+                fileName.add(jf.getName());
+                fileSize.add(jf.getSize());
         System.out.println("kurdebele");
     }
 }
 
-//-------------------------------------------------------- OLD STUFF
-    /*
-
-    List<JavaFile> jf = pack.getJavaFiles();
-        pack.getPackages();
-                List<JavaClass> classes = pack.getSubClasses();
-        List<JavaMethod> methods = pack.getSubMethods();
-        System.out.println(files.get(5).getClassName());
-        for(JavaMethod jm:methods){
-        System.out.println(jm.getFullName());
-        }
-        for(JavaClass jc: classes){
-        System.out.println(jc.getFullName());
-        }
-
-
-
-        //*/
 /*
 //----------Test helper for PredefinedJavaClass:
         try {
@@ -52,6 +42,7 @@ public class RTeam {
                 }else{
                 System.out.println(false);
                 }
+
                 JavaClass Double2 = PredefinedJavaClass.getPredefinedJavaClass("double");
                 JavaClass Double = PredefinedJavaClass.getPredefinedJavaClass("Double");
                 if(Integer == Double){          //if(Integer and Double are references to same objects)
@@ -60,6 +51,12 @@ public class RTeam {
                 System.out.println(false);
                 }
                 JavaClass Double3 = PredefinedJavaClass.getPredefinedJavaClass("City"); //throws exception
+
+            }
+        } catch (FileNotFoundException ignore) {}
+
+        */
+
 
                 System.out.println("damn");
                 } catch (ClassNotFoundException e) {

@@ -17,7 +17,7 @@ public class Parser {
     /**
      * Parses the given file and returns the declared package name.
      * @param jf JavaFile
-     * @return Name of the package
+     * @return Name of the package (may be absent in the file, hence optional).
      * @throws FileNotFoundException
      */
     public static Optional<String> getPackage(JavaFile jf) throws FileNotFoundException {
@@ -30,7 +30,7 @@ public class Parser {
     /**
      * Gathers the imports in given file
      * @param jf JavaFile
-     * @return Set of Imports
+     * @return Set of Imports in the file.
      * @throws FileNotFoundException
      */
     public static Set<Import> getImports(JavaFile jf) throws FileNotFoundException {
@@ -41,7 +41,7 @@ public class Parser {
             Name importName = id.getName();
             String fullImport = importName.asString();
             Optional<Name> qualifier = importName.getQualifier();
-            if (id.isAsterisk() || !qualifier.isPresent()) {
+            if (id.isAsterisk() || qualifier.isEmpty()) {
                 imports.add(new Import(fullImport));
             } else {
                 String fromPackage = qualifier.get().asString();
@@ -101,7 +101,7 @@ public class Parser {
     /**
      * Constructs a mapping: package imports a set of packages; Map<String, Set<String>>
      * @param path directory to be scanned
-     * @return Mapping
+     * @return Mapping: package -> imported packages
      */
     public static Map<String, Set<String>> package_graph(String path) {
         Map<String, Set<String>> g = new HashMap<>();
@@ -112,7 +112,7 @@ public class Parser {
      * Constructs a mapping: method calls other methods; the inner map
      * contains the calledfunction and the number of times it was called
      * @param path
-     * @return
+     * @return Mapping: Method -> (called Method -> number of times called)
      */
     public static Map<String, Map<String, Integer>> call_graph(String path) {
         Map<String, Map<String, Integer>> g = new HashMap<>();
@@ -129,45 +129,14 @@ public class Parser {
         }
         return cds;
     }
-
-    public static void main(String[] args) {
-        try {
-            PackageFile pf = new PackageFile(JavaFile.getProjectPath());
-            for (JavaFile jf : pf.getSubFiles()) {
-                for (ClassDeclaration c : Parser.getClassesOrInterfaces(jf)) {
-                    System.out.println(c.getName());
-                    for (MethodDeclaration md : c.getMethods()) {
-                        System.out.println("  "+md.getName());
-                        Map<String, String> lv = md.getLocalVariables();
-                        for (String key : lv.keySet()) {
-                            System.out.println(String.format("    %s %s", lv.get(key), key));
-                        }
-                        Map<String, Integer> mc = md.getMethodCalls();
-                        for (String key : mc.keySet()) {
-                            System.out.println(String.format("    %s (%s)", key, mc.get(key)));
-                        }
-                    }
-                }
-            }
-        } catch (FileNotFoundException ignore) {}
-
-        /*
-        Map<String, Set<String>> g = package_graph(JavaFile.getProjectPath());
-        for (String k : g.keySet()) {
-            System.out.println(String.format("'%s' imports: (%d)", k, g.get(k).size()));
-            for (String v : g.get(k)) {
-                System.out.println(String.format("\t%s", v));
-            }
+    public static Set<EnumDeclaration> getEnumDeclarations(JavaFile jf) throws FileNotFoundException {
+        Set<EnumDeclaration> enums = new HashSet<>();
+        String content = jf.getContent();
+        CompilationUnit cu = StaticJavaParser.parse(content);
+        Set<com.github.javaparser.ast.body.EnumDeclaration> cd = new HashSet<>(cu.findAll(com.github.javaparser.ast.body.EnumDeclaration.class));
+        for (com.github.javaparser.ast.body.EnumDeclaration ed : cd) {
+            enums.add(new EnumDeclaration(ed));
         }
-
-        Map<String, Map<String, Integer>> c = call_graph(JavaFile.getProjectPath());
-        for (String caller : c.keySet()) {
-            Map<String, Integer> calls = c.get(caller);
-            System.out.println(String.format("'%s' calls: (%d)", caller, calls.size()));
-            for (String callee : calls.keySet()) {
-                System.out.println(String.format("\t%s (%d)", callee, calls.get(callee)));
-            }
-        }
-        */
+        return enums;
     }
 }
