@@ -38,7 +38,7 @@ public class FieldDeclaration {
     }
 
     public String getName() {
-        return this.fd.getVariable(i).toString();
+        return this.fd.getVariable(i).getName().asString();
     }
 
     @Override
