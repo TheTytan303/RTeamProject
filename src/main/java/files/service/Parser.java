@@ -140,4 +140,19 @@ public class Parser {
         }
         return enums;
     }
+
+    public static void main(String[] args) {
+        PackageFile pf = new PackageFile(JavaFile.getProjectPath());
+        for (JavaFile jf : pf.getSubFiles()) {
+            try {
+                Set<ClassDeclaration> cds = getClassesOrInterfaces(jf);
+                for (ClassDeclaration cd : cds) {
+                    System.out.println(cd);
+                    for (MethodDeclaration md : cd.getConstructors()) {
+                        System.out.println(md);
+                    }
+                }
+            } catch (Exception ignore) {}
+        }
+    }
 }
