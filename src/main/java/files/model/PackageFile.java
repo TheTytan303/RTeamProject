@@ -78,20 +78,39 @@ public class PackageFile {
                 e.printStackTrace();
             }
         }
+        for(JavaClass jc: getSubClasses()){
+            jc.convertFields(getSubClasses());
+        }
+        List<JavaMethod> methods = getSubMethods();
+        for(JavaMethod m : methods){
+            m.convertMethods();
+        }
     }
 
+    /**
+     * Returns child-packs of this package
+     */
     public List<PackageFile> getPackages() {
         return packages;
     }
+    /**
+     * Returns JavaFiles from only this package
+     */
     public List<JavaFile> getJavaFiles() {
         return javaFiles;
     }
     public String getName() {
         return name;
     }
+    /**
+     * Returns ALL methods from ALL JavaFiles in this pack and it's child-packs
+     * */
     public List<JavaFile> getSubFiles(){
         return this.allJavaSubFiles;
     }
+    /**
+    * Returns ALL methods from ALL JavaFiles in this pack and it's child-packs
+    * */
     public List<JavaMethod> getSubMethods(){
       List<JavaMethod> returnVale = new ArrayList<>();
       for(PackageFile pf: packages){
@@ -102,6 +121,9 @@ public class PackageFile {
       }
       return  returnVale;
     }
+    /**
+     * Returns ALL Classes from ALL JavaClasses in this pack and it's child-packs
+     * */
     public List<JavaClass> getSubClasses(){
         List<JavaClass> returnVale = new ArrayList<>();
         for(PackageFile pf: packages){
@@ -114,15 +136,15 @@ public class PackageFile {
         return returnVale;
     }
 
-    public void setPackages(List<PackageFile> packages) {
-        this.packages = packages;
-    }
-    public void setJavaFiles(List<JavaFile> javaFiles) {
-        this.javaFiles = javaFiles;
-    }
+
     public void setName(String name) {
         this.name = name;
     }
+    /**
+     * Returns unique name for this package
+     * unique name contains path
+     * there cannot be 2 same unique package names in one Directory structure
+     * */
     public String getFullName(){
         return this.path;
     }
@@ -132,4 +154,8 @@ public class PackageFile {
         return name;
     }
 
+
+    //---------------------------------------------------------------------------------------SUFF:
+    //public void setPackages(List<PackageFile> packages) {this.packages = packages;}
+    //public void setJavaFiles(List<JavaFile> javaFiles) {this.javaFiles = javaFiles;}
 }

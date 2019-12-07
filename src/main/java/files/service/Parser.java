@@ -125,11 +125,10 @@ public class Parser {
         CompilationUnit cu = StaticJavaParser.parse(content);
         Set<ClassOrInterfaceDeclaration> cd = new HashSet<>(cu.findAll(ClassOrInterfaceDeclaration.class));
         for (ClassOrInterfaceDeclaration c : cd) {
-            cds.add(new ClassDeclaration(c, jf));
+            cds.add(new ClassDeclaration(c, getPackage(jf)));
         }
         return cds;
     }
-
     public static Set<EnumDeclaration> getEnumDeclarations(JavaFile jf) throws FileNotFoundException {
         Set<EnumDeclaration> enums = new HashSet<>();
         String content = jf.getContent();

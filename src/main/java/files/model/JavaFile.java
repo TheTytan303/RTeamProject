@@ -32,8 +32,6 @@ public class JavaFile implements Comparator<JavaFile> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String[] tmp = getName().split("\\.");
-        //this.className = tmp[0];
         try {
             Set<ClassDeclaration> set = Parser.getClassesOrInterfaces(this);
             javaClass = new ArrayList<>();
