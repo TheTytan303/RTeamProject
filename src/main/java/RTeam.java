@@ -11,13 +11,14 @@ import files.service.Parser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 
 public class RTeam {
 
-    public static void main(String[] args){
+    public static void story1(){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
         List<JavaClass> classes = pack.getSubClasses();
         List<JavaFile> files = pack.getSubFiles();
@@ -45,6 +46,57 @@ public class RTeam {
         Graph applet = new Graph();
         applet.importData(fileName, fileSize, relationships);
         applet.draw("Dependencies", true);
+    }
+
+    public static void story2(){
+        PackageFile pack = new PackageFile(JavaFile.getProjectPath());
+
+        ArrayList<String> methodName = new ArrayList<>();
+        ArrayList<Long> methodCallCount = new ArrayList<>();
+        ArrayList<Relationship> relationships = new ArrayList<>();
+
+        List<JavaFile> files =pack.getSubFiles();
+        List<JavaMethod> methods= new ArrayList<>();
+
+        for(JavaFile jf: files){
+            methods.addAll(jf.getMethods());
+        }
+
+        for (JavaMethod jm : methods) {
+            Map<JavaMethod, Integer> calledMethods = jm.getCalledMethod();
+
+            Iterator<Map.Entry<JavaMethod, Integer>> itr = calledMethods.entrySet().iterator();
+
+            while(itr.hasNext()) {
+                Map.Entry<JavaMethod, Integer> entry = itr.next();
+
+                if(entry.getKey() != null) {
+                    methodName.add(entry.getKey().getName());
+                    methodCallCount.add((long) entry.getValue());
+                    ArrayList<String> calls = new ArrayList<>();
+
+                    Map<JavaMethod, Integer> innerCalls = entry.getKey().getCalledMethod();
+                    Iterator<Map.Entry<JavaMethod, Integer>> innerItr = innerCalls.entrySet().iterator();
+
+                    while(innerItr.hasNext()) {
+                        Map.Entry<JavaMethod, Integer> call = innerItr.next();
+                        if(call.getKey() != null) {
+                            calls.add(call.getKey().getName());
+                        }
+                    }
+
+                    relationships.add(new Relationship(entry.getKey().getName(), calls));
+                }
+            }
+        }
+
+        Graph applet = new Graph();
+        applet.importData(methodName, methodCallCount, relationships);
+        applet.draw("Dependencies", true);
+    }
+
+    public static void main(String[] args){
+        story2();
 
     }
 }
