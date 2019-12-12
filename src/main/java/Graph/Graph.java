@@ -2,6 +2,7 @@ package Graph;
 
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
+import com.mxgraph.view.mxGraphView;
 import org.jgrapht.*;
 import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
@@ -117,6 +118,12 @@ public class Graph extends JApplet
         layout.setRadius(radius);
         layout.setMoveCircle(true);
 
+
+        mxGraphView view = layout.getGraph().getView();
+        view.setScale(0.3);
         layout.execute(jgxAdapter.getDefaultParent());
+
+
+
     }
 }

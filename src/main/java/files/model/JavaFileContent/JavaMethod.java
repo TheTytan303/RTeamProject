@@ -46,6 +46,11 @@ public class JavaMethod implements JavaEntity{
             this.params.add(new JavaClass(s));
         }
     }
+
+    public String getClassMethodName(){
+        return this.parent.getName() + "::" + this.getName() + "()";
+    }
+
     public String getFullName(){
         String returnVale = ""+parent.getFullName()+"|"+this;
         return returnVale;

@@ -71,7 +71,7 @@ public class RTeam {
                 Map.Entry<JavaMethod, Integer> entry = itr.next();
 
                 if(entry.getKey() != null) {
-                    methodName.add(entry.getKey().getName());
+                    methodName.add(entry.getKey().getClassMethodName());
                     methodCallCount.add((long) entry.getValue());
                     ArrayList<String> calls = new ArrayList<>();
 
@@ -81,11 +81,11 @@ public class RTeam {
                     while(innerItr.hasNext()) {
                         Map.Entry<JavaMethod, Integer> call = innerItr.next();
                         if(call.getKey() != null) {
-                            calls.add(call.getKey().getName());
+                            calls.add(call.getKey().getClassMethodName());
                         }
                     }
 
-                    relationships.add(new Relationship(entry.getKey().getName(), calls));
+                    relationships.add(new Relationship(entry.getKey().getClassMethodName(), calls));
                 }
             }
         }
