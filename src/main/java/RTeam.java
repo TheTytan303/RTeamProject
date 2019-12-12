@@ -30,10 +30,22 @@ public class RTeam {
             for (JavaFile jf : pack.getSubFiles()) {
                 fileName.add(jf.getName());
                 fileSize.add(jf.getSize());
+
+                ArrayList<String> relationshipNames = new ArrayList<>();
+                for(JavaFile a : jf.getImports()) {
+                    relationshipNames.add(a.getName());
+                }
+                relationships.add(new Relationship(jf.getName(), relationshipNames));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Graph applet = new Graph();
+        applet.importData(fileName, fileSize, relationships);
+        applet.draw("Dependencies", true);
+
     }
 }
 
