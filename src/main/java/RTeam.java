@@ -92,7 +92,7 @@ public class RTeam {
 
         Graph applet = new Graph();
         applet.importData(methodName, methodCallCount, relationships);
-        applet.draw("Dependencies", true);
+        applet.draw("Method calls", true);
     }
 
     public static void main(String[] args){
