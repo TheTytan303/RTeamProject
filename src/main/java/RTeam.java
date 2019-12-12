@@ -11,6 +11,8 @@ import files.service.Parser;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class RTeam {
@@ -24,42 +26,38 @@ public class RTeam {
         ArrayList<String> fileName = new ArrayList<>();
         ArrayList<Long> fileSize = new ArrayList<>();
         ArrayList<Relationship> relationships = new ArrayList<>();
-        try{
-            for (JavaFile jf : pf.getSubFiles()) {
+        try {
+            for (JavaFile jf : pack.getSubFiles()) {
                 fileName.add(jf.getName());
                 fileSize.add(jf.getSize());
-        System.out.println("kurdebele");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
 /*
-//----------Test helper for PredefinedJavaClass:
-        try {
-                JavaClass Integer = PredefinedJavaClass.getPredefinedJavaClass("int");
-                JavaClass Integer2 = PredefinedJavaClass.getPredefinedJavaClass("Integer");
-                if(Integer == Integer2){        //if(Integer and Integer2 are references to same objects)
-                System.out.println(true);
-                }else{
-                System.out.println(false);
-                }
-
-                JavaClass Double2 = PredefinedJavaClass.getPredefinedJavaClass("double");
-                JavaClass Double = PredefinedJavaClass.getPredefinedJavaClass("Double");
-                if(Integer == Double){          //if(Integer and Double are references to same objects)
-                System.out.println(true);
-                }else{
-                System.out.println(false);
-                }
-                JavaClass Double3 = PredefinedJavaClass.getPredefinedJavaClass("City"); //throws exception
-
+    //Test helper for PredefinedJavaClass:
+    try {
+            JavaClass Integer = PredefinedJavaClass.getPredefinedJavaClass("int");
+            JavaClass Integer2 = PredefinedJavaClass.getPredefinedJavaClass("Integer");
+            if(Integer == Integer2){        //if(Integer and Integer2 are references to same objects)
+            System.out.println(true);
+            }else{
+            System.out.println(false);
             }
-        } catch (FileNotFoundException ignore) {}
 
-        */
+            JavaClass Double2 = PredefinedJavaClass.getPredefinedJavaClass("double");
+            JavaClass Double = PredefinedJavaClass.getPredefinedJavaClass("Double");
+            if(Integer == Double){          //if(Integer and Double are references to same objects)
+            System.out.println(true);
+            }else{
+            System.out.println(false);
+            }
+            JavaClass Double3 = PredefinedJavaClass.getPredefinedJavaClass("City"); //throws exception
 
+        }
+    } catch (FileNotFoundException ignore) {}
 
-                System.out.println("damn");
-                } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                }
-                */
+*/
