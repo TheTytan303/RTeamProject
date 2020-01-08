@@ -8,6 +8,9 @@ import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Graph extends JApplet
@@ -40,7 +43,7 @@ public class Graph extends JApplet
 
     }
 
-    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
+    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship){
 
         vs.clear();
         is.clear();
@@ -74,6 +77,28 @@ public class Graph extends JApplet
             rel.addOutCount(outCount);
 
             System.out.println("\n\n");
+        }
+
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter("test.txt"));
+
+            for (int i = 0; i<fileName.size(); i++) {
+                for (int j = 0; j<relationships.size(); j++) {
+                    if (relationship.get(j).getInCount()==0) continue;
+                    for (int k =0; k<relationships.get(j).getDependencies().size(); k++) {
+                        String string = fileName.get(i)+"->"+ relationships.get(j).getDependencies().get(k)+": "+relationships.get(j).getInCount()+"  "+relationships.get(j).getOutCount();
+                        string = string.replace("::", "\\n");
+                        writer.append(string+'\n');
+                        System.out.println(string);
+                }
+            }
+        }
+
+        writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return new ArrayList[]{vs, is, relationships};
