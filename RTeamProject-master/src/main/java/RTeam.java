@@ -10,15 +10,12 @@ import files.service.ClassDeclaration;
 import files.service.Parser;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class RTeam {
 
-    public static void story1(){
+    public static void story1(double scale){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
         List<JavaClass> classes = pack.getSubClasses();
         List<JavaFile> files = pack.getSubFiles();
@@ -43,12 +40,12 @@ public class RTeam {
             e.printStackTrace();
         }
 
-        Graph applet = new Graph();
+        Graph applet = new Graph(scale);
         applet.importData(fileName, fileSize, relationships);
-        applet.draw("Dependencies", true);
+        applet.draw("Story 1", true);
     }
 
-    public static void story2(){
+    public static void story2(double scale){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
 
         ArrayList<String> methodName = new ArrayList<>();
@@ -90,13 +87,37 @@ public class RTeam {
             }
         }
 
-        Graph applet = new Graph();
+        Graph applet = new Graph(scale);
         applet.importData(methodName, methodCallCount, relationships);
-        applet.draw("Method calls", true);
+        applet.draw("Story 2", true);
     }
 
     public static void main(String[] args){
-        story2();
+        double scale;
+        String story;
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Type 1,2,3 to start story, anything else to stop program");
+        story=scan.next();
+        while(true) {
+            switch (story){
+                case "1":
+                    System.out.println("set graph scale");
+                    scale=scan.nextDouble();
+                 story1(scale);
+                 System.out.println("If you want to change story type: 2. Type 1 to start story1. If you want to stop program type anything else");
+                 story=scan.next();
+                 break;
+                case "2":
+                    System.out.println("set graph scale");
+                    scale=scan.nextDouble();
+                     story2(scale);
+                    System.out.println("If you want to change story type: 1.  Type 2 to start story2. If you want to stop program type anything else.");
+                    story=scan.next();
+                     break;
+                default:
+                    System.exit(1);
+
+        }}
 
     }
 }

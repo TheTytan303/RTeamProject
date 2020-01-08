@@ -15,19 +15,21 @@ public class Graph extends JApplet
     private static final ArrayList<String> vs = new ArrayList<String>();
     private static final ArrayList<String>is = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships = new ArrayList<>();
-
-    private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
+    double scale=1.0;
+    private static final Dimension DEFAULT_SIZE = new Dimension(1900, 1000);
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
-
+    public Graph(double scale){
+        this.scale=scale;
+    }
     public final void draw(String title, boolean visible){
         this.init();
 
         JFrame frame = new JFrame();
         frame.getContentPane().add(this);
         frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(visible);
+        frame.setAlwaysOnTop(true);
     }
 
     public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
@@ -79,14 +81,10 @@ public class Graph extends JApplet
 
         // create a visualization using JGraph, via an adapter
         jgxAdapter = new JGraphXAdapter<>(g);
-
         setPreferredSize(DEFAULT_SIZE);
         mxGraphComponent component = new mxGraphComponent(jgxAdapter);
-
         component.setConnectable(false);
         component.getGraph().setAllowDanglingEdges(false);
-
-
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
@@ -110,7 +108,6 @@ public class Graph extends JApplet
 
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
-
         // center the circle
         int radius = 150;
         layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
@@ -120,7 +117,7 @@ public class Graph extends JApplet
 
 
         mxGraphView view = layout.getGraph().getView();
-        view.setScale(0.3);
+        view.setScale(scale);
         layout.execute(jgxAdapter.getDefaultParent());
 
 
