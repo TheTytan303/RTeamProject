@@ -9,13 +9,75 @@ import files.model.PackageFile;
 import files.service.ClassDeclaration;
 import files.service.Parser;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class RTeam {
 
-    public static void story1(double scale){
+ static JFrame frame = new JFrame();
+ static double scale=1.0;
+    public static void frameInit(String title){
+        frame.setTitle(title);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel=new JPanel();
+        panel.setLayout(new BorderLayout());
+        frame.getContentPane().add(panel);
+        JMenuBar mb = new JMenuBar();
+        JButton  saveMenuItem = new JButton ("Export");
+        JButton  story1=new JButton ("Story 1");
+        JButton  story2=new JButton ("Story 2");
+        JButton  scaleIncrease =new JButton ("Scale++");
+        JButton  scaleDecrease =new JButton ("Scale--");
+        mb.add(saveMenuItem);
+        mb.add(story1);
+        mb.add(story2);
+        mb.add(scaleIncrease);
+        mb.add(scaleDecrease);
+        story1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story1(scale,panel);
+            }
+        });
+        story2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story2(scale,panel);
+            }
+        });
+        scaleIncrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale+=0.1;
+                System.out.println(scale);
+            }
+        });
+        scaleDecrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale-=0.1;
+                System.out.println(scale);
+            }
+        });
+        frame.setMinimumSize(new Dimension(700,700));
+        frame.setJMenuBar(mb);
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+
+
+    public static void story1(double scale,JPanel panel){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
         List<JavaClass> classes = pack.getSubClasses();
         List<JavaFile> files = pack.getSubFiles();
@@ -42,10 +104,10 @@ public class RTeam {
 
         Graph applet = new Graph(scale);
         applet.importData(fileName, fileSize, relationships);
-        applet.draw("Story 1", true);
+        applet.draw(panel);
     }
 
-    public static void story2(double scale){
+    public static void story2(double scale,JPanel panel){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
 
         ArrayList<String> methodName = new ArrayList<>();
@@ -89,35 +151,11 @@ public class RTeam {
 
         Graph applet = new Graph(scale);
         applet.importData(methodName, methodCallCount, relationships);
-        applet.draw("Story 2", true);
+        applet.draw( panel);
     }
 
     public static void main(String[] args){
-        double scale;
-        String story;
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Type 1,2,3 to start story, anything else to stop program");
-        story=scan.next();
-        while(true) {
-            switch (story){
-                case "1":
-                    System.out.println("set graph scale");
-                    scale=scan.nextDouble();
-                 story1(scale);
-                 System.out.println("If you want to change story type: 2. Type 1 to start story1. If you want to stop program type anything else");
-                 story=scan.next();
-                 break;
-                case "2":
-                    System.out.println("set graph scale");
-                    scale=scan.nextDouble();
-                     story2(scale);
-                    System.out.println("If you want to change story type: 1.  Type 2 to start story2. If you want to stop program type anything else.");
-                    story=scan.next();
-                     break;
-                default:
-                    System.exit(1);
-
-        }}
+        frameInit("IO");
 
     }
 }

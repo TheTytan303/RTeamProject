@@ -21,15 +21,11 @@ public class Graph extends JApplet
     public Graph(double scale){
         this.scale=scale;
     }
-    public final void draw(String title, boolean visible){
+    public final void draw(JPanel panel){
         this.init();
+        panel.add(this);
 
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(this);
-        frame.setTitle(title);
-        frame.pack();
-        frame.setVisible(visible);
-        frame.setAlwaysOnTop(true);
+
     }
 
     public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
@@ -81,10 +77,14 @@ public class Graph extends JApplet
 
         // create a visualization using JGraph, via an adapter
         jgxAdapter = new JGraphXAdapter<>(g);
+
         setPreferredSize(DEFAULT_SIZE);
         mxGraphComponent component = new mxGraphComponent(jgxAdapter);
+
         component.setConnectable(false);
         component.getGraph().setAllowDanglingEdges(false);
+
+
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
@@ -108,6 +108,7 @@ public class Graph extends JApplet
 
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
+
         // center the circle
         int radius = 150;
         layout.setX0((DEFAULT_SIZE.width / 2.0) - radius);
