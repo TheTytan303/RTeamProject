@@ -55,9 +55,6 @@ public class JavaMethod implements JavaEntity{
         String returnVale = ""+parent.getFullName()+"|"+this;
         return returnVale;
     }
-    public String getClassMethodName(){
-        return this.parent.getName()+"::"+this.getName()+"()";
-    }
     public String getName(){
         return this.name;
     }
