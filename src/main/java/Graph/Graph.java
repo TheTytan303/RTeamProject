@@ -26,8 +26,18 @@ public class Graph extends JApplet
         frame.getContentPane().add(this);
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JMenuBar mb = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        mb.add(menu);
+        JMenuItem saveMenuItem = new JMenuItem("Export");
+        menu.add(saveMenuItem);
+
+        frame.setJMenuBar(mb);
+
         frame.pack();
         frame.setVisible(visible);
+
     }
 
     public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
