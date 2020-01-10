@@ -7,7 +7,7 @@ import java.nio.file.Files;
 public class GitInfo {
     private final static String gitCommand = "git rev-parse HEAD";
 
-    public static String getHEADHash(String path) {
+    public static String getHeadHash(String path) {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         ProcessBuilder pb = new ProcessBuilder();
         if (isWindows) {
@@ -31,9 +31,5 @@ public class GitInfo {
         } catch (InterruptedException | IOException e) {
             return "error";
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getHEADHash("."));
     }
 }
