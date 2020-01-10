@@ -15,33 +15,27 @@ public class Graph extends JApplet
     private static final ArrayList<String> vs = new ArrayList<String>();
     private static final ArrayList<String>is = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships = new ArrayList<>();
-
-    private static final Dimension DEFAULT_SIZE = new Dimension(700, 700);
+    double scale=1.0;
+    private static final Dimension DEFAULT_SIZE = new Dimension(1900, 1000);
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
+    public Graph(double scale){
 
-    public final void draw(String title, boolean visible){
+        if(scale<=0){
+            throw new IllegalArgumentException("Scale can not be a negative number");}
+        this.scale=scale;
+    }
+    public final void draw(JPanel panel){
         this.init();
+        panel.add(this);
 
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(this);
-        frame.setTitle(title);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JMenuBar mb = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        mb.add(menu);
-        JMenuItem saveMenuItem = new JMenuItem("Export");
-        menu.add(saveMenuItem);
-
-        frame.setJMenuBar(mb);
-
-        frame.pack();
-        frame.setVisible(visible);
 
     }
 
-    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) {
+    public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) throws IllegalArgumentException{
 
+        if(fileName.isEmpty()|| fileSize.isEmpty() || relationship.isEmpty()) {
+            throw new  IllegalArgumentException("No files to load");
+        }
         vs.clear();
         is.clear();
 
@@ -130,7 +124,7 @@ public class Graph extends JApplet
 
 
         mxGraphView view = layout.getGraph().getView();
-        view.setScale(0.3);
+        view.setScale(scale);
         layout.execute(jgxAdapter.getDefaultParent());
 
 
