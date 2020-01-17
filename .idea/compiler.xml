@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="project" />
         <module name="RTeamProject" />
+        <module name="RTeamProject2" />
       </profile>
     </annotationProcessing>
   </component>

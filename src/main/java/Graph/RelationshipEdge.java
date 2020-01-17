@@ -2,7 +2,7 @@ package Graph;
 
 import org.jgrapht.graph.DefaultEdge;
 
-class RelationshipEdge
+public class RelationshipEdge
         extends
         DefaultEdge
 {

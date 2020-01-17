@@ -1,3 +1,5 @@
+package rTeam;
+
 import Graph.Graph;
 import Graph.Relationship;
 import files.model.JavaFile;
@@ -9,6 +11,10 @@ import files.model.PackageFile;
 import files.service.ClassDeclaration;
 import files.service.Parser;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +24,66 @@ import java.util.Map;
 
 public class RTeam {
 
-    public static void story1(){
+ public static JFrame frame = new JFrame();
+ public static JPanel panel=new JPanel();
+ static double scale=1.0;
+
+    public static void frameInit(String title){
+        frame.setTitle(title);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        panel.setLayout(new BorderLayout());
+        frame.getContentPane().add(panel);
+        JMenuBar mb = new JMenuBar();
+        JButton  saveMenuItem = new JButton ("Export");
+        JButton  story1=new JButton ("Story 1");
+        JButton  story2=new JButton ("Story 2");
+        JButton  scaleIncrease =new JButton ("Scale++");
+        JButton  scaleDecrease =new JButton ("Scale--");
+        mb.add(saveMenuItem);
+        mb.add(story1);
+        mb.add(story2);
+        mb.add(scaleIncrease);
+        mb.add(scaleDecrease);
+        story1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story1(scale,panel);
+            }
+        });
+        story2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story2(scale,panel);
+            }
+        });
+        scaleIncrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale+=0.1;
+                System.out.println(scale);
+            }
+        });
+        scaleDecrease.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(scale-0.1>0.1) {
+                    scale -= 0.1;
+                    System.out.println(scale);
+                }
+            }
+        });
+        frame.setMinimumSize(new Dimension(700,700));
+        frame.setJMenuBar(mb);
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+
+
+    public static void story1(double scale,JPanel panel){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
         List<JavaClass> classes = pack.getSubClasses();
         List<JavaFile> files = pack.getSubFiles();
@@ -43,12 +108,12 @@ public class RTeam {
             e.printStackTrace();
         }
 
-        Graph applet = new Graph();
-        applet.importData(fileName, fileSize, relationships);
-        applet.draw("Dependencies", true);
+            Graph applet = new Graph(scale);
+            applet.importData(fileName, fileSize, relationships);
+            applet.draw(panel);
     }
 
-    public static void story2(){
+    public static void story2(double scale,JPanel panel){
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
 
         ArrayList<String> methodName = new ArrayList<>();
@@ -90,13 +155,13 @@ public class RTeam {
             }
         }
 
-        Graph applet = new Graph();
-        applet.importData(methodName, methodCallCount, relationships);
-        applet.draw("Method calls", true);
+            Graph applet = new Graph(scale);
+            applet.importData(methodName, methodCallCount, relationships);
+            applet.draw(panel);
     }
 
     public static void main(String[] args){
-        story2();
+        frameInit("IO");
 
     }
 }
