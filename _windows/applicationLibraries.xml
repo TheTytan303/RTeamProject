@@ -1,0 +1,12 @@
+<application>
+  <component name="libraryTable">
+    <library name="lib">
+      <CLASSES>
+        <root url="file://E:/IO/jgrapht-1.3.0/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://E:/IO/jgrapht-1.3.0/lib" recursive="false" />
+    </library>
+  </component>
+</application>
