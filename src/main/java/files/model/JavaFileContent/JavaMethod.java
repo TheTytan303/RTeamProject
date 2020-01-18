@@ -14,7 +14,7 @@ import static files.service.AccessModifier.*;
 
 public class JavaMethod implements JavaEntity{
     private String name;
-    private List<JavaClass> params;
+    private List<JavaField> params;
     private List<JavaField> localVariables;
     private Map<String, Integer> calledMethodsNames;
     private Map<JavaMethod, Integer> calledMethods;
@@ -31,26 +31,33 @@ public class JavaMethod implements JavaEntity{
         this.isStatic = md.isStatic();
         this.isSynchronized = md.isSynchronized();
         this.params = new ArrayList<>();
+        this.localVariables = new ArrayList<>();
+        for(String s: md.getArgumentTypeNames()){
+            String type = s.split("\\\\")[0];
+            String name = s.split("\\\\")[1];
+            //this.params.add(new JavaClass(s));
+            JavaField jf = new JavaField(Access.type_private,type,name);
+            this.localVariables.add(jf);
+            this.params.add(jf);
+        }
         this.returnType = new JavaClass(md.getReturnType());
         this.calledMethodsNames = md.getMethodCalls();
         this.calledMethods = new HashMap<>();
-        this.localVariables = new ArrayList<>();
         this.localVariables.add(new JavaField(Access.type_private, parent, "this"));
         Map<String, String> entry2 = md.getLocalVariables();
+        //for(JavaClass param: params){
+        //    //entry2.put()
+        //}
         for(Map.Entry<String, String> entry : entry2.entrySet()){
             this.localVariables.add(new JavaField(Access.type_private, entry.getValue(), entry.getKey()));
             //System.out.println("");
         }
         this.parent = parent;
-        for(String s: md.getArgumentTypeNames()){
-            this.params.add(new JavaClass(s));
-        }
     }
 
     public String getClassMethodName(){
         return this.parent.getName() + "::" + this.getName() + "()";
     }
-
     public String getFullName(){
         String returnVale = ""+parent.getFullName()+"|"+this;
         return returnVale;
@@ -88,7 +95,7 @@ public class JavaMethod implements JavaEntity{
                 }
             }
         }
-        System.out.print("");
+        //System.out.print("");
     }
     void convertLocalVariables(List<JavaClass> allClasses){
         for(JavaField jf: localVariables){
@@ -101,8 +108,8 @@ public class JavaMethod implements JavaEntity{
     @Override
     public String toString(){
         String returnVale = this.returnType + " " + this.name + "(" ;
-        for(JavaClass jc:params) {
-            returnVale = returnVale.concat(jc + ", ");
+        for(JavaField jf:params) {
+            returnVale = returnVale.concat(jf.getType() + ", ");
         }
         if(params.size()!=0)
         returnVale = returnVale.substring(0, returnVale.length()-2);

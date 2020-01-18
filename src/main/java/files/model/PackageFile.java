@@ -6,7 +6,9 @@ import files.model.JavaFileContent.JavaMethod;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PackageFile {
     private List<PackageFile> packages;
@@ -135,7 +137,23 @@ public class PackageFile {
 
         return returnVale;
     }
-
+    /**
+     * Returns map o package dependencies
+     * */
+    public Map<PackageFile, Integer> getPackageDependencies(){
+        Map<PackageFile, Integer> returnVale= new HashMap<>();
+        for(JavaFile jf: javaFiles){
+            List<JavaFile> imports = jf.getImports();
+            for(JavaFile imported:imports){
+                if(imported.getParent() == this) continue;
+                Integer i = returnVale.putIfAbsent(imported.getParent() , 1);
+                if(i != null){
+                    returnVale.replace(imported.getParent(), i+1);
+                }
+            }
+        }
+        return returnVale;
+    }
 
     public void setName(String name) {
         this.name = name;

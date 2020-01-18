@@ -61,7 +61,8 @@ public class JavaField {
         }
         try {
             this.type = PredefinedJavaClass.getPredefinedJavaClass(stringType);
-        }catch (Exception e){
+        }catch (Exception ignored){
+
         }
     }
     public void setCode(String code){
@@ -76,7 +77,12 @@ public class JavaField {
                 return;
             }
         }
-        System.out.println(this.stringType+ " " + this.name);
+        //System.out.println(this.stringType+ " " + this.name);
     }
     public String getName() {return name;}
+
+    @Override
+    public String toString(){
+        return this.getType().getName() + " " +this.getName();
+    }
 }
