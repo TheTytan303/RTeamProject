@@ -86,7 +86,8 @@ public class MethodDeclaration {
             params = this.cd.getParameters();
         }
         for (Parameter p : params) {
-            args.add(p.getType().asString());
+            //args.add(p.getType().asString()); // oldo
+            args.add(p.getType().asString()+"\\"+p.getName().asString()); // sorka Michał, szybka modyfikacja cobym dostawał też nazwy argumentów :D ~WC
         }
         return args;
     }

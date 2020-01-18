@@ -15,7 +15,7 @@ public class JavaClass implements JavaEntity{
     private List<JavaClass> subClasses;
     private List<JavaMethod> methods;
     private List<JavaField> fields;
-    private JavaClass returns;
+    //private JavaClass returns;
     private JavaFile parent;
     private String code;
 

@@ -1,4 +1,4 @@
-package rTeam;
+package Rteam;
 
 import Graph.Graph;
 import Graph.Relationship;
