@@ -45,6 +45,7 @@ public class RTeam {
         JButton story1 = new JButton("Story 1");
         JButton story2 = new JButton("Story 2");
         JButton story3 = new JButton("Story 3");
+        JButton story4 = new JButton("Story 4");
         JButton rem = new JButton("Remove");
         JButton scaleIncrease = new JButton("Scale++");
         JButton scaleDecrease = new JButton("Scale--");
@@ -52,6 +53,7 @@ public class RTeam {
         mb.add(story1);
         mb.add(story2);
         mb.add(story3);
+        mb.add(story4);
         mb.add(rem);
         mb.add(scaleIncrease);
         mb.add(scaleDecrease);
@@ -80,9 +82,18 @@ public class RTeam {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
-                story3(scale, panel);
+
                 SwingUtilities.updateComponentTreeUI(frame);
                 storyActive = 3;
+            }
+        });
+        story4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story4(scale, panel);
+                SwingUtilities.updateComponentTreeUI(frame);
+                storyActive = 4;
             }
         });
         rem.addActionListener(new ActionListener() {
@@ -108,7 +119,9 @@ public class RTeam {
                         story2(scale, panel);
                         break;
                     case 3:
-                        story3(scale, panel);
+                        break;
+                    case 4:
+                        story4(scale, panel);
                         break;
                 }
                 SwingUtilities.updateComponentTreeUI(frame);
@@ -130,7 +143,9 @@ public class RTeam {
                             story2(scale, panel);
                             break;
                         case 3:
-                            story3(scale, panel);
+                            break;
+                        case 4:
+                            story4(scale, panel);
                             break;
                     }
                     SwingUtilities.updateComponentTreeUI(frame);
@@ -202,7 +217,7 @@ public class RTeam {
         applet.draw(panel);
     }
 
-    public static void story3(double scale, JPanel panel) {
+    public static void story4(double scale, JPanel panel) {
         PackageFile pack2 = new PackageFile(JavaFile.getProjectPath());
         ArrayList<String> methodName2 = new ArrayList<>();
         ArrayList<Long> methodCallCount2 = new ArrayList<>();
