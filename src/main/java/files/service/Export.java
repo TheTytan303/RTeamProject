@@ -11,22 +11,35 @@ public class Export {
 	private StringBuilder exportSting;
 	private String filename;
 
-	public void Export(){
+	Export(){
 		exportSting = new StringBuilder();
 	}
 
-	public void Export(String filename){
-		Export();
+	Export(String filename){
+		this();
 		this.filename=filename;
 	}
 
+	private String escapeColons(String str){
+		return str.replace(":",";");
+	}
 
-	public void addRelation(String from, String to, String arrowDescription){
-		from = from.replace(":",";");
-		to = to.replace(":",";");
-		arrowDescription = arrowDescription.replace(":",";");
-		String str = from+"->"+to+": "+arrowDescription+'\n';
+	public void addRelation(String participantFrom, String participantTo, String arrowDescription){
+		participantFrom = escapeColons(participantFrom);
+		participantTo = escapeColons(participantTo);
+		arrowDescription = escapeColons(arrowDescription);
+		String str = participantFrom+"->"+participantTo+": "+arrowDescription+'\n';
+		System.out.print(str);
 		exportSting.append(str);
+	}
+
+	public void addRelation(String participantFrom, String participantTo){
+		addRelation(participantFrom,participantTo,"");
+	}
+
+	public void addParticipant(String participantName){
+		participantName = escapeColons(participantName);
+		String str = "participant "+participantName+'\n';		exportSting.append(str);
 	}
 
 	public void setFilename(String filename){
@@ -37,6 +50,7 @@ public class Export {
 		try {
 			BufferedWriter writer =  new BufferedWriter(new FileWriter(filename));
 			writer.write(exportSting.toString());
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,7 @@
+import Rteam.RTeam;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import rTeam.RTeam;
+
 
 import javax.swing.*;
 

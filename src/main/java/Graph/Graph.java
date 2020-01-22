@@ -3,12 +3,16 @@ package Graph;
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 import com.mxgraph.view.mxGraphView;
+import files.service.StoriesExportAdapter;
 import org.jgrapht.*;
 import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Graph extends JApplet {
@@ -49,6 +53,8 @@ public class Graph extends JApplet {
         is.clear();
         relationships.clear();
 
+
+
         for (int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
             is.add("1");
@@ -74,6 +80,9 @@ public class Graph extends JApplet {
             rel.addOutCount(outCount);
             System.out.println();
         }
+
+
+
         return new ArrayList[]{vs, is, relationships};
     }
 
@@ -150,21 +159,34 @@ public class Graph extends JApplet {
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
+        StoriesExportAdapter storiesExportAdapter = new StoriesExportAdapter();
+        storiesExportAdapter.getExport().setFilename("test1.txt");
+
         //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
         //add vertices
         for (Relationship rel : relationships) {
             String name = rel.getName();
             g.addVertex(name);
+            storiesExportAdapter.addStory1Participant(name,rel.getInCount()+"");
         }
 
-        //Add edges
         for (Relationship rel : relationships) {
             String name = rel.getName();
             for (int i = 0; i < rel.getDependencies().size(); i++) {
                 String depName = rel.getDependencies().get(i);
                 g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+
+                storiesExportAdapter.addStory1Relation(name,depName);
+
+                String str = name+"->"+depName+": IN;"+rel.getInCount()+'\n';
+                str = str.replace("::",";;");
+
+
+                }
             }
-        }
+
+        storiesExportAdapter.getExport().save();
+
 
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);

@@ -178,6 +178,7 @@ public class RTeam {
         }
         Graph applet = new Graph(scale);
         applet.importData(fileName, fileSize, relationships);
+
         applet.draw(panel);
     }
 
