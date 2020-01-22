@@ -82,7 +82,7 @@ public class RTeam {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
-
+                story3(scale, panel);
                 SwingUtilities.updateComponentTreeUI(frame);
                 storyActive = 3;
             }
@@ -119,6 +119,7 @@ public class RTeam {
                         story2(scale, panel);
                         break;
                     case 3:
+                        story3(scale, panel);
                         break;
                     case 4:
                         story4(scale, panel);
@@ -143,6 +144,7 @@ public class RTeam {
                             story2(scale, panel);
                             break;
                         case 3:
+                            story3(scale, panel);
                             break;
                         case 4:
                             story4(scale, panel);
@@ -215,6 +217,33 @@ public class RTeam {
         Graph applet = new Graph(scale);
         applet.importData(methodName, methodCallCount, relationships);
         applet.draw(panel);
+    }
+
+    public static void story3(double scale, JPanel panel) {
+        PackageFile pack = new PackageFile(JavaFile.getProjectPath());
+
+        ArrayList<String> packages = new ArrayList<>();
+        ArrayList<Long> count = new ArrayList<>();
+        ArrayList<Relationship> relationships = new ArrayList<>();
+
+        for(var innerPackage : pack.getPackages()) {
+            var depsMap = innerPackage.getPackageDependencies();
+            for(var deps : depsMap.entrySet()) {
+                packages.add(deps.getKey().getFullName());
+                count.add(Long.valueOf(deps.getValue()));
+                ArrayList<String> relationshipNames = new ArrayList<>();
+                var innerDepsMap = deps.getKey().getPackageDependencies();
+                for(var innerDeps : innerDepsMap.entrySet()) {
+                    relationshipNames.add(innerDeps.getKey().getFullName());
+                }
+                relationships.add(new Relationship(deps.getKey().getFullName(), relationshipNames));
+            }
+        }
+
+        Graph applet = new Graph(scale);
+        applet.importData(packages, count, relationships);
+        applet.draw(panel);
+
     }
 
     public static void story4(double scale, JPanel panel) {
