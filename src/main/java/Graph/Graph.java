@@ -1,5 +1,6 @@
 package Graph;
 
+import Rteam.RTeam;
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 import com.mxgraph.view.mxGraphView;
@@ -23,6 +24,8 @@ public class Graph extends JApplet {
     private static final ArrayList<String> vs2 = new ArrayList<String>();
     private static final ArrayList<String> is2 = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships2 = new ArrayList<>();
+
+    public static StoriesExportAdapter storiesExportAdapter;
 
     private static final Dimension DEFAULT_SIZE = new Dimension(500, 500);
     double scale = 1.0;
@@ -163,8 +166,8 @@ public class Graph extends JApplet {
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
-        StoriesExportAdapter storiesExportAdapter = new StoriesExportAdapter();
-        storiesExportAdapter.getExport().setFilename("test1.txt");
+        storiesExportAdapter = new StoriesExportAdapter();
+
 
         //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
         //add vertices
@@ -189,7 +192,7 @@ public class Graph extends JApplet {
                 }
             }
 
-        storiesExportAdapter.getExport().save();
+
 
 
         // positioning via JGraphX layouts
