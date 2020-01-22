@@ -221,24 +221,23 @@ public class RTeam {
         ArrayList<Long> count = new ArrayList<>();
         ArrayList<Relationship> relationships = new ArrayList<>();
 
-        for(var innerPackage : pack.getPackages()) {
-            var depsMap = innerPackage.getPackageDependencies();
-            for(var deps : depsMap.entrySet()) {
-                packages.add(deps.getKey().getFullName());
-                count.add(Long.valueOf(deps.getValue()));
-                ArrayList<String> relationshipNames = new ArrayList<>();
-                var innerDepsMap = deps.getKey().getPackageDependencies();
-                for(var innerDeps : innerDepsMap.entrySet()) {
-                    relationshipNames.add(innerDeps.getKey().getFullName());
-                }
-                relationships.add(new Relationship(deps.getKey().getFullName(), relationshipNames));
-            }
-        }
+       for(var dependency : PackageFile.getAllDependeciesMap(pack).entrySet()) {
+
+           var packageFile = dependency.getKey();
+           var packageMap = dependency.getValue();
+           packages.add(packageFile.getFullName());
+
+           ArrayList<String> relationshipNames = new ArrayList<>();
+           for(var innerPackage : packageMap.entrySet() ) {
+               count.add(Long.valueOf(innerPackage.getValue()));
+               relationshipNames.add(innerPackage.getKey().getFullName());
+           }
+           relationships.add(new Relationship(packageFile.getFullName(), relationshipNames));
+       }
 
         Graph applet = new Graph(scale);
         applet.importData(packages, count, relationships);
         applet.draw(panel);
-
     }
 
     public static void story4(double scale, JPanel panel) {
