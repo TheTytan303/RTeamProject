@@ -3,20 +3,14 @@ package Rteam;
 import Graph.Graph;
 import Graph.Relationship;
 import files.model.JavaFile;
-import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
-import files.model.JavaFileContent.PredefinedJavaClass;
 import files.model.PackageFile;
-
-import files.service.ClassDeclaration;
 import files.service.GitInfo;
-import files.service.Parser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +77,7 @@ public class RTeam {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
-
+                story3(scale, panel);
                 SwingUtilities.updateComponentTreeUI(frame);
                 storyActive = 3;
             }
@@ -120,6 +114,7 @@ public class RTeam {
                         story2(scale, panel);
                         break;
                     case 3:
+                        story3(scale, panel);
                         break;
                     case 4:
                         story4(scale, panel);
@@ -144,6 +139,7 @@ public class RTeam {
                             story2(scale, panel);
                             break;
                         case 3:
+                            story3(scale, panel);
                             break;
                         case 4:
                             story4(scale, panel);
@@ -215,6 +211,32 @@ public class RTeam {
         }
         Graph applet = new Graph(scale);
         applet.importData(methodName, methodCallCount, relationships);
+        applet.draw(panel);
+    }
+
+    public static void story3(double scale, JPanel panel) {
+        PackageFile pack = new PackageFile(JavaFile.getProjectPath());
+
+        ArrayList<String> packages = new ArrayList<>();
+        ArrayList<Long> count = new ArrayList<>();
+        ArrayList<Relationship> relationships = new ArrayList<>();
+
+       for(var dependency : PackageFile.getAllDependeciesMap(pack).entrySet()) {
+
+           var packageFile = dependency.getKey();
+           var packageMap = dependency.getValue();
+           packages.add(packageFile.getFullName());
+
+           ArrayList<String> relationshipNames = new ArrayList<>();
+           for(var innerPackage : packageMap.entrySet() ) {
+               count.add(Long.valueOf(innerPackage.getValue()));
+               relationshipNames.add(innerPackage.getKey().getFullName());
+           }
+           relationships.add(new Relationship(packageFile.getFullName(), relationshipNames));
+       }
+
+        Graph applet = new Graph(scale);
+        applet.importData(packages, count, relationships);
         applet.draw(panel);
     }
 
