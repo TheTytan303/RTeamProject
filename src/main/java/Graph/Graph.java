@@ -45,6 +45,10 @@ public class Graph extends JApplet {
         panel.add(this);
     }
 
+    public final void draw3(JPanel panel) {
+        panel.add(this);
+    }
+
     public final ArrayList[] importData(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship) throws IllegalArgumentException {
         if (fileName.isEmpty() || fileSize.isEmpty() || relationship.isEmpty()) {
             throw new IllegalArgumentException("No files to load");
