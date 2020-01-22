@@ -28,7 +28,10 @@ public class RTeam {
     public static JFrame frame = new JFrame();
     public static JPanel panel = new JPanel();
     public static ImageIcon img = new ImageIcon("images/Rlogo.jpg");
-
+    public static JButton story1 = new JButton("Story 1");
+    public static JButton story2 = new JButton("Story 2");
+    public static JButton story3 = new JButton("Story 3");
+    public static JButton story4 = new JButton("Story 4");
     static double scale = 1.0;
     static String version = GitInfo.getHeadHash(".");
     static int storyActive = 0;
@@ -43,10 +46,7 @@ public class RTeam {
         JLabel scaleLabel = new JLabel("scale: " + Double.toString(scale));
         JLabel versionLabel = new JLabel("  version: " + version);
         JButton saveMenuItem = new JButton("Export");
-        JButton story1 = new JButton("Story 1");
-        JButton story2 = new JButton("Story 2");
-        JButton story3 = new JButton("Story 3");
-        JButton story4 = new JButton("Story 4");
+
         JButton rem = new JButton("Remove");
         JButton scaleIncrease = new JButton("Scale++");
         JButton scaleDecrease = new JButton("Scale--");

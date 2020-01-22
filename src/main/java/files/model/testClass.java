@@ -10,6 +10,7 @@ public class testClass {
     public static void main(String[] args){
         //PackageFile mainPackage = JavaFile.getFilesFrom();
         String path = JavaFile.getProjectPath();
+        System.out.println(path);
         //path = path.concat("\\files\\service");
         PackageFile mainPackage = new PackageFile(path);
         Map<PackageFile, Integer> packageImport = mainPackage.getPackageDependencies();
