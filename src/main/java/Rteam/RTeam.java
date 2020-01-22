@@ -3,20 +3,14 @@ package Rteam;
 import Graph.Graph;
 import Graph.Relationship;
 import files.model.JavaFile;
-import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
-import files.model.JavaFileContent.PredefinedJavaClass;
 import files.model.PackageFile;
-
-import files.service.ClassDeclaration;
 import files.service.GitInfo;
-import files.service.Parser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +21,7 @@ public class RTeam {
 
     public static JFrame frame = new JFrame();
     public static JPanel panel = new JPanel();
+    public static ImageIcon img = new ImageIcon("images/Rlogo.jpg");
 
     static double scale = 1.0;
     static String version = GitInfo.getHeadHash(".");
@@ -37,7 +32,7 @@ public class RTeam {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel.setLayout(new BorderLayout());
         frame.getContentPane().add(panel);
-
+        frame.setIconImage(img.getImage());
         JMenuBar mb = new JMenuBar();
         JLabel scaleLabel = new JLabel("scale: " + Double.toString(scale));
         JLabel versionLabel = new JLabel("  version: " + version);

@@ -135,7 +135,6 @@ public class JavaFile implements Comparator<JavaFile> {
         String sep = File.separator;
         return System.getProperty("user.dir")+sep+"src"+sep+"main"+sep+"java";
     }
-
     public static JavaFile toJF(String path){
         File file = new File(path);
         if(file.getPath().endsWith(".java")){

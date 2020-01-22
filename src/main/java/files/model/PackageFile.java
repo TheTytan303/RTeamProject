@@ -137,6 +137,14 @@ public class PackageFile {
 
         return returnVale;
     }
+    public List<PackageFile> getSubPackages(){
+        List<PackageFile> returnVale = new ArrayList<>();
+        returnVale.addAll(this.packages);
+        for(PackageFile pf: this.packages){
+            returnVale.addAll(pf.getSubPackages());
+        }
+        return returnVale;
+    }
     /**
      * Returns map o package dependencies
      * */
@@ -172,7 +180,15 @@ public class PackageFile {
         return name;
     }
 
+    public static Map<PackageFile, Map<PackageFile, Integer>> getAllDependeciesMap(PackageFile target){
+        Map<PackageFile, Map<PackageFile, Integer>> returnVale = new HashMap<>();
+        for(PackageFile pf: target.getSubPackages()){
+            returnVale.put(pf, pf.getPackageDependencies());
+        }
+        returnVale.put(target, target.getPackageDependencies());
 
+        return returnVale;
+    }
     //---------------------------------------------------------------------------------------SUFF:
     //public void setPackages(List<PackageFile> packages) {this.packages = packages;}
     //public void setJavaFiles(List<JavaFile> javaFiles) {this.javaFiles = javaFiles;}
