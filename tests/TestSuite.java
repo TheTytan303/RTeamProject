@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 @SelectClasses({GraphTest.class,
         RelationshipEdgeTest.class,
         RelationshipTest.class,
-        RTeamTest.class})
+        RTeamTest.class,
+        GitInfoTest.class})
 public class TestSuite {
 }
