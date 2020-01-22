@@ -27,6 +27,7 @@ public class RTeam {
 
     public static JFrame frame = new JFrame();
     public static JPanel panel = new JPanel();
+    public static ImageIcon img = new ImageIcon("images/Rlogo.jpg");
 
     static double scale = 1.0;
     static String version = GitInfo.getHeadHash(".");
@@ -37,7 +38,7 @@ public class RTeam {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel.setLayout(new BorderLayout());
         frame.getContentPane().add(panel);
-
+        frame.setIconImage(img.getImage());
         JMenuBar mb = new JMenuBar();
         JLabel scaleLabel = new JLabel("scale: " + Double.toString(scale));
         JLabel versionLabel = new JLabel("  version: " + version);
