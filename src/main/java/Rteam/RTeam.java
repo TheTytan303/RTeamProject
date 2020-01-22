@@ -3,20 +3,14 @@ package Rteam;
 import Graph.Graph;
 import Graph.Relationship;
 import files.model.JavaFile;
-import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
-import files.model.JavaFileContent.PredefinedJavaClass;
 import files.model.PackageFile;
-
-import files.service.ClassDeclaration;
 import files.service.GitInfo;
-import files.service.Parser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
