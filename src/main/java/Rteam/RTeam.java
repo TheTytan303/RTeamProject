@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +92,23 @@ public class RTeam {
                 storyActive = 4;
             }
         });
+
+        saveMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser jFileChooser = new JFileChooser();
+                int userSelection = jFileChooser.showSaveDialog(frame);
+
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = jFileChooser.getSelectedFile();
+                    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+                    Graph.storiesExportAdapter.getExport().setFilename(fileToSave.getAbsolutePath());
+                    Graph.storiesExportAdapter.getExport().save();
+
+                }
+            }
+        });
+
         rem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
