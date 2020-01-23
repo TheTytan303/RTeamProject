@@ -209,6 +209,10 @@ public class Graph extends JApplet {
         for (Relationship rel : relationships) {
             String name = rel.getName();
             g.addVertex(name);
+            for (int i = 0; i < rel.getDependencies().size(); i++) {
+                name = rel.getDependencies().get(i);
+                g.addVertex(name);
+            }
             storiesExportAdapter.addStoryParticipant(name);
         }
 

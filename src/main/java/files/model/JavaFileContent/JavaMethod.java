@@ -105,6 +105,7 @@ public class JavaMethod implements JavaEntity{
 
     @Override
     public String toString(){
+        String s ="\n CyclomaticComplexity = " + this.getCyclomaticComplexity();
         String returnVale = this.returnType + " " + this.name + "(" ;
         for(JavaField jf:params) {
             returnVale = returnVale.concat(jf.getType() + ", ");
@@ -112,6 +113,7 @@ public class JavaMethod implements JavaEntity{
         if(params.size()!=0)
         returnVale = returnVale.substring(0, returnVale.length()-2);
         returnVale =returnVale.concat(")");
+        returnVale =returnVale.concat(s);
         return returnVale;
     }
     static Access accesTranslate(AccessModifier access){
