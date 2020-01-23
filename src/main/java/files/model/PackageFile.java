@@ -189,6 +189,15 @@ public class PackageFile {
 
         return returnVale;
     }
+    public static Map<JavaMethod, JavaFile> getMethodFileDependecies(PackageFile target){
+        Map<JavaMethod, JavaFile> returnVale = new HashMap<>();
+        for(JavaFile jf: target.getSubFiles()){
+            for(JavaMethod jm: jf.getMethods()){
+                returnVale.put(jm, jf);
+            }
+        }
+        return returnVale;
+    }
     //---------------------------------------------------------------------------------------SUFF:
     //public void setPackages(List<PackageFile> packages) {this.packages = packages;}
     //public void setJavaFiles(List<JavaFile> javaFiles) {this.javaFiles = javaFiles;}
