@@ -5,7 +5,7 @@ import Graph.Relationship;
 import files.model.JavaFile;
 import files.model.JavaFileContent.JavaMethod;
 import files.model.PackageFile;
-import files.service.GitInfo;
+import files.git.GitInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +27,7 @@ public class RTeam {
     public static JButton story2 = new JButton("Story 2");
     public static JButton story3 = new JButton("Story 3");
     public static JButton story4 = new JButton("Story 4");
+    public static JButton story6 = new JButton("Story 6");
     static double scale = 1.0;
     static String version = GitInfo.getHeadHash(".");
     static int storyActive = 0;
@@ -54,6 +55,7 @@ public class RTeam {
         mb.add(story2);
         mb.add(story3);
         mb.add(story4);
+        mb.add(story6);
         mb.add(rem);
         mb.add(scaleIncrease);
         mb.add(scaleDecrease);
@@ -94,6 +96,15 @@ public class RTeam {
                 story4(scale, panel);
                 SwingUtilities.updateComponentTreeUI(frame);
                 storyActive = 4;
+            }
+        });
+        story6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                story6(scale, panel);
+                SwingUtilities.updateComponentTreeUI(frame);
+                storyActive = 6;
             }
         });
 
@@ -141,6 +152,9 @@ public class RTeam {
                     case 4:
                         story4(scale, panel);
                         break;
+                    case 6:
+                        story6(scale, panel);
+                        break;
                 }
                 SwingUtilities.updateComponentTreeUI(frame);
             }
@@ -165,6 +179,9 @@ public class RTeam {
                             break;
                         case 4:
                             story4(scale, panel);
+                            break;
+                        case 6:
+                            story6(scale, panel);
                             break;
                     }
                     SwingUtilities.updateComponentTreeUI(frame);
@@ -338,6 +355,32 @@ public class RTeam {
         applet.drawAllStories(panel);
     }
 
+    public static void story6(double scale, JPanel panel) {
+        PackageFile pack = new PackageFile(JavaFile.getProjectPath());
+
+        ArrayList<String> packages = new ArrayList<>();
+        ArrayList<Long> count = new ArrayList<>();
+        ArrayList<Relationship> relationships = new ArrayList<>();
+
+        for(var dependency : PackageFile.getAllDependeciesMap(pack).entrySet()) {
+
+            var packageFile = dependency.getKey();
+            var packageMap = dependency.getValue();
+
+            packages.add(packageFile.getFullName());
+
+            ArrayList<String> relationshipNames = new ArrayList<>();
+            for (var innerPackage : packageMap.entrySet()) {
+                count.add(Long.valueOf(innerPackage.getValue()));
+                relationshipNames.add(innerPackage.getKey().getFullName());
+            }
+            relationships.add(new Relationship(packageFile.getFullName(), relationshipNames));
+        }
+
+        Graph applet = new Graph(scale);
+        applet.importData(packages, count, relationships);
+        applet.draw(panel);
+    }
 
     public static void main(String[] args) {
         try {
