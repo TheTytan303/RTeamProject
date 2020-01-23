@@ -13,7 +13,7 @@ public class testClass {
         System.out.println(path);
         //path = path.concat("\\files\\service");
         PackageFile mainPackage = new PackageFile(path);
-        //Map<JavaMethod, JavaFile> map = PackageFile.getMethodFileDependecies(mainPackage);
+        Map<JavaFile, Map<JavaMethod, Integer>> map = PackageFile.getMethodFileDependecies2(mainPackage);
         //PackageFile.partitionGraph(mainPackage);
         List<JavaClass> subClasses = mainPackage.getSubClasses();
         //Map<PackageFile, Integer> packageImport = mainPackage.getPackageDependencies();

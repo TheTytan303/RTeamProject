@@ -53,10 +53,10 @@ public class JavaMethod implements JavaEntity{
     }
 
     public String getClassMethodName(){
-        return this.parent.getName() + "::" + this.getName() + "()";
+        return this.parent.getName() + "::" + this.getName() + "()"+"\n CyclomaticComplexity = " + this.getCyclomaticComplexity();
     }
     public String getFullName(){
-        String returnVale = ""+parent.getFullName()+"|"+this;
+        String returnVale = ""+parent.getFullName()+"|"+this+"\n CyclomaticComplexity = " + this.getCyclomaticComplexity();
         return returnVale;
     }
     public String getName(){
