@@ -6,13 +6,11 @@ import files.model.JavaFile;
 import files.model.JavaFileContent.JavaMethod;
 import files.model.PackageFile;
 import files.service.GitInfo;
-import files.service.StoriesExportAdapter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -93,24 +91,6 @@ public class RTeam {
                 storyActive = 4;
             }
         });
-
-        saveMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser jFileChooser = new JFileChooser();
-                int userSelection = jFileChooser.showSaveDialog(frame);
-
-                if (userSelection == JFileChooser.APPROVE_OPTION) {
-                    File fileToSave = jFileChooser.getSelectedFile();
-                    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-                    if (Graph.storiesExportAdapter != null) {
-                        Graph.storiesExportAdapter.getExport().setFilename(fileToSave.getAbsolutePath());
-                        Graph.storiesExportAdapter.getExport().save();
-                    }
-                }
-            }
-        });
-
         rem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -242,19 +222,19 @@ public class RTeam {
         ArrayList<Long> count = new ArrayList<>();
         ArrayList<Relationship> relationships = new ArrayList<>();
 
-       for(var dependency : PackageFile.getAllDependeciesMap(pack).entrySet()) {
+        for (var dependency : PackageFile.getAllDependeciesMap(pack).entrySet()) {
 
-           var packageFile = dependency.getKey();
-           var packageMap = dependency.getValue();
-           packages.add(packageFile.getFullName());
+            var packageFile = dependency.getKey();
+            var packageMap = dependency.getValue();
+            packages.add(packageFile.getFullName());
 
-           ArrayList<String> relationshipNames = new ArrayList<>();
-           for(var innerPackage : packageMap.entrySet() ) {
-               count.add(Long.valueOf(innerPackage.getValue()));
-               relationshipNames.add(innerPackage.getKey().getFullName());
-           }
-           relationships.add(new Relationship(packageFile.getFullName(), relationshipNames));
-       }
+            ArrayList<String> relationshipNames = new ArrayList<>();
+            for (var innerPackage : packageMap.entrySet()) {
+                count.add(Long.valueOf(innerPackage.getValue()));
+                relationshipNames.add(innerPackage.getKey().getFullName());
+            }
+            relationships.add(new Relationship(packageFile.getFullName(), relationshipNames));
+        }
 
         Graph applet = new Graph(scale);
         applet.importData(packages, count, relationships);
@@ -292,6 +272,7 @@ public class RTeam {
                 }
             }
         }
+
         PackageFile pack = new PackageFile(JavaFile.getProjectPath());
         ArrayList<String> fileName = new ArrayList<>();
         ArrayList<Long> fileSize = new ArrayList<>();
@@ -309,10 +290,32 @@ public class RTeam {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        PackageFile pack3 = new PackageFile(JavaFile.getProjectPath());
+
+        ArrayList<String> packages3 = new ArrayList<>();
+        ArrayList<Long> count3 = new ArrayList<>();
+        ArrayList<Relationship> relationships3 = new ArrayList<>();
+
+        for (var dependency : PackageFile.getAllDependeciesMap(pack3).entrySet()) {
+
+            var packageFile = dependency.getKey();
+            var packageMap = dependency.getValue();
+            packages3.add(packageFile.getFullName());
+
+            ArrayList<String> relationshipNames = new ArrayList<>();
+            for (var innerPackage : packageMap.entrySet()) {
+                count3.add(Long.valueOf(innerPackage.getValue()));
+                relationshipNames.add(innerPackage.getKey().getFullName());
+            }
+            relationships3.add(new Relationship(packageFile.getFullName(), relationshipNames));
+        }
         Graph applet = new Graph(scale);
-        applet.importData2(fileName, fileSize, relationships, methodName2, methodCallCount2, relationships2);
-        applet.draw2(panel);
+        System.out.println();
+        applet.importDataAllStories(fileName, fileSize, relationships, methodName2, methodCallCount2, relationships2, packages3, count3, relationships3);
+        applet.drawAllStories(panel);
     }
+
 
     public static void main(String[] args) {
         frameInit("IO");
