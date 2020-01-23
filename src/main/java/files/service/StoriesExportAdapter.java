@@ -22,6 +22,11 @@ public class StoriesExportAdapter {
 		export.addParticipant(newName);
 	}
 
+	public void addStory2Relation(String functionCalling, String functionCalled, String count){
+		//export.addRelation(exportNamesMap.get(fromFile),exportNamesMap.get(toFile));
+	}
+
+
 	public Export getExport(){
 		return export;
 	}
