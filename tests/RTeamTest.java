@@ -40,12 +40,12 @@ class RTeamTest {
         assertDoesNotThrow(()->RTeam.story2(scale, RTeam.panel));
     }
 
-   /* @Test
+   @Test
     void checkIfStory3IsStarting() {
         //RTeam.frameInit("tytul");
         double scale = 1.0;
         assertDoesNotThrow(()->RTeam.story3(scale, RTeam.panel));
-    }*/
+    }
 
     @Test
     void checkIfStory4IsStarting() {

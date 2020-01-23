@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
         RelationshipTest.class,
         RTeamTest.class,
         GitInfoTest.class,
-        UserInterfaceTest.class})
+        UserInterfaceTest.class,
+        ParserTest.class})
 public class TestSuite {
 }
