@@ -1,10 +1,17 @@
 package files.service;
 
+import Graph.Relationship;
+import com.github.javaparser.ast.body.CallableDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.*;
+import com.sun.source.tree.CaseTree;
+import files.model.JavaFile;
+import files.model.PackageFile;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class MethodDeclaration {
@@ -133,6 +140,39 @@ public class MethodDeclaration {
             }
         }
         return mc;
+    }
+
+    /**
+     * McCabe Java Cyclomatic Complexity
+     * @return cyclomatic complexity
+     */
+    public int getCyclomaticComplexity() {
+        CallableDeclaration cd = this.md == null ? this.cd : this.md;
+        int cc = 1;
+        List<ReturnStmt> returnStatements = cd.findAll(ReturnStmt.class); /* Return Statements */
+        cc += (returnStatements.size() > 1 ? returnStatements.size() : 0); // TODO very roughly true
+        cc += cd.findAll(WhileStmt.class).size(); /* While Statements */
+        cc += cd.findAll(DoStmt.class).size(); /* Do Loops */
+        cc += cd.findAll(ForEachStmt.class).size(); /* ForEach Statements */
+        cc += cd.findAll(ForStmt.class).size(); /* For Statements */
+        cc += cd.findAll(ContinueStmt.class).size(); /* Continue Statements */
+        cc += cd.findAll(BreakStmt.class).size(); /* Break Statements */
+
+        List<IfStmt> ifStatements = cd.findAll(IfStmt.class); /* If Statements */
+        cc += ifStatements.size();
+        for (IfStmt is : ifStatements) {
+            Optional<Statement> elseStatement = is.getElseStmt();
+            if (elseStatement.isPresent()) {
+                cc++;
+            }
+        }
+        cc += cd.findAll(SwitchEntry.class).size(); /* Switch Entries (including default) */
+        List<CatchClause> catchClauses = cd.findAll(CatchClause.class); /* Catch Clauses */
+        cc += catchClauses.size();
+        List<ThrowStmt> throwStatments = cd.findAll(ThrowStmt.class); /* Throw Statements */
+        cc += throwStatments.size();
+        /* TODO NODE javaparser seem to not have FinallyStmt */
+        return cc;
     }
 
     @Override
