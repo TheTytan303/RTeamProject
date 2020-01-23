@@ -5,26 +5,20 @@ import java.util.Map;
 
 public class StoriesExportAdapter {
 	Export export;
-	Map<String,String> exportNamesMap;
+
 
 	public StoriesExportAdapter(){
 		export = new Export();
-		exportNamesMap = new HashMap<>();
 	}
 
-	public void addStory1Relation(String fromFile, String toFile){
-		export.addRelation(exportNamesMap.get(fromFile),exportNamesMap.get(toFile));
+	public void addStoryRelation(String from, String to, String in, String out){
+		export.addRelation(from,to,"IN: "+in+" OUT: "+out);
 	}
 
-	public void addStory1Participant(String name,String count){
-		String newName = name+"\\n"+count;
-		exportNamesMap.put(name, newName);
-		export.addParticipant(newName);
+	public void addStoryParticipant(String name){
+		export.addParticipant(name);
 	}
 
-	public void addStory2Relation(String functionCalling, String functionCalled, String count){
-		//export.addRelation(exportNamesMap.get(fromFile),exportNamesMap.get(toFile));
-	}
 
 
 	public Export getExport(){

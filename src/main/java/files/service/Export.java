@@ -21,7 +21,11 @@ public class Export {
 	}
 
 	private String escapeColons(String str){
-		return str.replace(":",";");
+		return str.replaceAll(":",";");
+	}
+
+	public String getExportSting() {
+		return exportSting.toString();
 	}
 
 	public void addRelation(String participantFrom, String participantTo, String arrowDescription){
@@ -39,7 +43,8 @@ public class Export {
 
 	public void addParticipant(String participantName){
 		participantName = escapeColons(participantName);
-		String str = "participant "+participantName+'\n';		exportSting.append(str);
+		String str = "participant "+participantName+'\n';
+		exportSting.append(str);
 	}
 
 	public void setFilename(String filename){

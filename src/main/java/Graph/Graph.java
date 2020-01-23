@@ -200,7 +200,7 @@ public class Graph extends JApplet {
         for (Relationship rel : relationships) {
             String name = rel.getName();
             g.addVertex(name);
-            storiesExportAdapter.addStory1Participant(name,rel.getInCount()+"");
+            storiesExportAdapter.addStoryParticipant(name);
         }
 
         for (Relationship rel : relationships) {
@@ -209,11 +209,7 @@ public class Graph extends JApplet {
                 String depName = rel.getDependencies().get(i);
                 g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
 
-                storiesExportAdapter.addStory1Relation(name,depName);
-
-                String str = name+"->"+depName+": IN;"+rel.getInCount()+'\n';
-                str = str.replace("::",";;");
-
+                storiesExportAdapter.addStoryRelation(name,depName, rel.getInCount()+"", rel.getOutCount()+"");
 
                 }
             }
