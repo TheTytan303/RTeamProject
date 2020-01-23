@@ -2,6 +2,10 @@ package files.model;
 
 import files.model.JavaFileContent.JavaClass;
 import files.model.JavaFileContent.JavaMethod;
+import org.jgrapht.alg.interfaces.PartitioningAlgorithm;
+import org.jgrapht.alg.partition.BipartitePartitioning;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -198,7 +202,7 @@ public class PackageFile {
         }
         return returnVale;
     }
-    //---------------------------------------------------------------------------------------SUFF:
+        //---------------------------------------------------------------------------------------SUFF:
     //public void setPackages(List<PackageFile> packages) {this.packages = packages;}
     //public void setJavaFiles(List<JavaFile> javaFiles) {this.javaFiles = javaFiles;}
 }

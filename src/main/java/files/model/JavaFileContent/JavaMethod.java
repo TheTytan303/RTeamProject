@@ -2,15 +2,11 @@ package files.model.JavaFileContent;
 
 import files.service.AccessModifier;
 import files.service.MethodDeclaration;
-import files.service.Parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static files.service.AccessModifier.*;
-//import static files.service.AccessModifier.PUBLIC;
 
 public class JavaMethod implements JavaEntity{
     private String name;
@@ -22,7 +18,7 @@ public class JavaMethod implements JavaEntity{
     private Boolean isStatic, isSynchronized;
     private Access access;
     private JavaClass parent;
-
+    private int cyclomaticComplexity;
     private String code;
 
     public JavaMethod(JavaClass parent, MethodDeclaration md){
@@ -31,6 +27,7 @@ public class JavaMethod implements JavaEntity{
         this.isStatic = md.isStatic();
         this.isSynchronized = md.isSynchronized();
         this.params = new ArrayList<>();
+        this.cyclomaticComplexity = md.getCyclomaticComplexity();
         this.localVariables = new ArrayList<>();
         for(String s: md.getArgumentTypeNames()){
             String type = s.split("\\\\")[0];
@@ -65,6 +62,7 @@ public class JavaMethod implements JavaEntity{
     public String getName(){
         return this.name;
     }
+    public int getCyclomaticComplexity(){return this.cyclomaticComplexity;}
     public Map<JavaMethod, Integer> getCalledMethod(){
         return this.calledMethods;
     }

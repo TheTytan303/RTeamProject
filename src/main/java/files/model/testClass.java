@@ -13,7 +13,8 @@ public class testClass {
         System.out.println(path);
         //path = path.concat("\\files\\service");
         PackageFile mainPackage = new PackageFile(path);
-        Map<JavaMethod, JavaFile> map = PackageFile.getMethodFileDependecies(mainPackage);
+        //Map<JavaMethod, JavaFile> map = PackageFile.getMethodFileDependecies(mainPackage);
+        //PackageFile.partitionGraph(mainPackage);
         List<JavaClass> subClasses = mainPackage.getSubClasses();
         //Map<PackageFile, Integer> packageImport = mainPackage.getPackageDependencies();
         //Map<PackageFile, Integer> packageImport2 = mainPackage.getPackages().get(0).getPackageDependencies();
@@ -33,3 +34,22 @@ public class testClass {
         return;
     }
 }
+/*
+public static void partitionGraph(PackageFile target){
+        SimpleGraph<JavaMethod, DefaultEdge> returnVale =new SimpleGraph<JavaMethod, DefaultEdge>(DefaultEdge.class);
+        for(JavaMethod jm: target.getSubMethods()){
+            returnVale.addVertex(jm);
+        }
+        for(JavaMethod jm: target.getSubMethods()){
+            for(JavaMethod jm2: jm.getCalledMethod().keySet()){
+                if(jm2 != null && jm2 != jm) returnVale.addEdge(jm,jm2);
+            }
+        }
+        BipartitePartitioning partitioning = new BipartitePartitioning(returnVale);
+        PartitioningAlgorithm.Partitioning part = partitioning.getPartitioning();
+        System.out.print("damn");
+        //PartitioningAlgorithm.PartitioningImpl tmp = new PartitioningAlgorithm.PartitioningImpl();
+    }
+
+
+ */
