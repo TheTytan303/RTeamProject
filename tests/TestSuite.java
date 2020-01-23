@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
         RTeamTest.class,
         GitInfoTest.class,
         UserInterfaceTest.class,
-        ParserTest.class})
+        ParserTest.class,
+        ExportTest.class})
 public class TestSuite {
 }
