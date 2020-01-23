@@ -15,12 +15,13 @@ class RTeamTest {
 
     @BeforeClass
     public static void init(){
-        frameInit("Test");
+        try {
+            frameInit("Test");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    /*@Before
-    public static void waitPEriodofTime(){
-        atMost(100, TimeUnit.SECONDS);
-    }*/
+
     @Test
     void checkIfFrameIsOpening() {
        // RTeam.frameInit("tytul");
@@ -73,5 +74,11 @@ class RTeamTest {
        // RTeam.frameInit("tytul");
         assertThrows(IllegalArgumentException.class,()->{
             RTeam.story4(-1, RTeam.panel);} );
+    }
+    @Test
+    void shouldThrowExceptionIfFrameIsNotInitialised(){
+    RTeam.frame=null;
+    assertThrows(Exception.class, ()->{frameInit("");});
+
     }
 }

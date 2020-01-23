@@ -11,11 +11,11 @@ public class Export {
 	private StringBuilder exportSting;
 	private String filename;
 
-	Export(){
+	public Export(){
 		exportSting = new StringBuilder();
 	}
 
-	Export(String filename){
+	public Export(String filename){
 		this();
 		this.filename=filename;
 	}
@@ -33,7 +33,7 @@ public class Export {
 		participantTo = escapeColons(participantTo);
 		arrowDescription = escapeColons(arrowDescription);
 		String str = participantFrom+"->"+participantTo+": "+arrowDescription+'\n';
-		System.out.print(str);
+		//System.out.print(str);
 		exportSting.append(str);
 	}
 

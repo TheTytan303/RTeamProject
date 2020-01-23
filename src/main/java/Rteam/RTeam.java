@@ -31,7 +31,11 @@ public class RTeam {
     static String version = GitInfo.getHeadHash(".");
     static int storyActive = 0;
 
-    public static void frameInit(String title) {
+    public static void frameInit(String title) throws Exception{
+        if(frame==null || panel==null){
+            throw new Exception("Frame or panel not initialised!");
+        }
+        
         frame.setTitle(title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel.setLayout(new BorderLayout());
@@ -336,7 +340,11 @@ public class RTeam {
 
 
     public static void main(String[] args) {
-        frameInit("IO");
+        try {
+            frameInit("IO");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

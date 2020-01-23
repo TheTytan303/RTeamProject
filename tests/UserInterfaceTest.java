@@ -12,7 +12,11 @@ public class UserInterfaceTest {
 
    @BeforeClass
     public static void init(){
-       frameInit("Test");
+       try {
+           frameInit("Test");
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
    }
 
 
