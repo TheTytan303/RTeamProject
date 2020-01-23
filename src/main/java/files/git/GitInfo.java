@@ -1,8 +1,7 @@
-package files.service;
+package files.git;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class GitInfo {
     private final static String gitCommand = "git rev-parse HEAD";
