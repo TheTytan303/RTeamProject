@@ -1,14 +1,19 @@
 package Graph;
 
+import Rteam.RTeam;
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 import com.mxgraph.view.mxGraphView;
+import files.service.StoriesExportAdapter;
 import org.jgrapht.*;
 import org.jgrapht.ext.*;
 import org.jgrapht.graph.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Graph extends JApplet {
@@ -20,7 +25,12 @@ public class Graph extends JApplet {
     private static final ArrayList<String> is2 = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships2 = new ArrayList<>();
 
+    public static StoriesExportAdapter storiesExportAdapter;
+
     private static final Dimension DEFAULT_SIZE = new Dimension(500, 500);
+    private static final ArrayList<String> vs3 = new ArrayList<String>();
+    private static final ArrayList<String> is3 = new ArrayList<String>();
+    private static final ArrayList<Relationship> relationships3 = new ArrayList<>();
     double scale = 1.0;
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
 
@@ -36,12 +46,8 @@ public class Graph extends JApplet {
         panel.add(this);
     }
 
-    public final void draw2(JPanel panel) {
-        this.init2();
-        panel.add(this);
-    }
-
-    public final void draw3(JPanel panel) {
+    public final void drawAllStories(JPanel panel) {
+        this.initAllStories();
         panel.add(this);
     }
 
@@ -52,6 +58,8 @@ public class Graph extends JApplet {
         vs.clear();
         is.clear();
         relationships.clear();
+
+
 
         for (int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
@@ -78,11 +86,15 @@ public class Graph extends JApplet {
             rel.addOutCount(outCount);
             System.out.println();
         }
+
+
+
         return new ArrayList[]{vs, is, relationships};
     }
 
-    public final ArrayList[] importData2(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship, ArrayList<String> fileName2, ArrayList<Long> fileSize2, ArrayList<Relationship> relationship2) throws IllegalArgumentException {
-        if (fileName.isEmpty() || fileSize.isEmpty() || relationship.isEmpty() || fileName2.isEmpty() || fileSize2.isEmpty() || relationship2.isEmpty()) {
+    public final ArrayList[] importDataAllStories(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship, ArrayList<String> fileName2, ArrayList<Long> fileSize2, ArrayList<Relationship> relationship2,
+                                         ArrayList<String> packages, ArrayList<Long> count, ArrayList<Relationship> relationship3) throws IllegalArgumentException {
+       if (fileName.isEmpty() || fileSize.isEmpty() || relationship.isEmpty() || fileName2.isEmpty() || fileSize2.isEmpty() || relationship2.isEmpty()||packages.isEmpty()||count.isEmpty()||relationship3.isEmpty()) {
             throw new IllegalArgumentException("No files to load");
         }
         vs.clear();
@@ -91,6 +103,10 @@ public class Graph extends JApplet {
         vs2.clear();
         is2.clear();
         relationships2.clear();
+        vs3.clear();
+        is3.clear();
+        relationships3.clear();
+
         for (int i = 0; i < fileName.size(); i++) {
             vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
             is.add("1");
@@ -100,6 +116,11 @@ public class Graph extends JApplet {
             vs2.add(fileName2.get(i) + "\n" + fileSize2.get(i).toString());
             is2.add("1");
             relationships2.add(relationship2.get(i));
+        }
+        for (int i = 0; i < packages.size(); i++) {
+            vs3.add(packages.get(i) + "\n" + packages.get(i).toString());
+            is3.add("1");
+            relationships3.add(relationship3.get(i));
         }
         //calculate relationships count
         for (Relationship rel : relationships) {
@@ -129,16 +150,34 @@ public class Graph extends JApplet {
                 outCount++;
                 String depName = rel.getDependencies().get(i);
                 System.out.println("DEP:\t" + depName);
-                Integer pos = Relationship.getIndexFromName(relationships, rel.getDependencies().get(i));
+                Integer pos = Relationship.getIndexFromName(relationships2, rel.getDependencies().get(i));
                 if (pos != -1) {
-                    relationships.get(pos).incrementInCount();
+                    relationships2.get(pos).incrementInCount();
                     pos++;
                 }
             }
             rel.addOutCount(outCount);
             System.out.println();
         }
-        return new ArrayList[]{vs, is, relationships, relationships2, vs2, is2};
+        for (Relationship rel : relationships3) {
+            String name = rel.getName();
+            //find vs with this name
+            System.out.println("FROM: " + name);
+            Integer outCount = 0;
+            for (int i = 0; i < rel.getDependencies().size(); i++) {
+                outCount++;
+                String depName = rel.getDependencies().get(i);
+                System.out.println("DEP:\t" + depName);
+                Integer pos = Relationship.getIndexFromName(relationships3, rel.getDependencies().get(i));
+                if (pos != -1) {
+                    relationships3.get(pos).incrementInCount();
+                    pos++;
+                }
+            }
+            rel.addOutCount(outCount);
+            System.out.println();
+        }
+        return new ArrayList[]{vs, is, relationships,  vs2, is2,relationships2,vs3,is3, relationships3};
     }
 
     @Override
@@ -154,26 +193,38 @@ public class Graph extends JApplet {
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
-        //jgxAdapter.getStylesheet().getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL,"0");
+        storiesExportAdapter = new StoriesExportAdapter();
+
+
         //add vertices
         for (Relationship rel : relationships) {
             String name = rel.getName();
             g.addVertex(name);
+            storiesExportAdapter.addStory1Participant(name,rel.getInCount()+"");
         }
 
-        //Add edges
         for (Relationship rel : relationships) {
             String name = rel.getName();
             for (int i = 0; i < rel.getDependencies().size(); i++) {
                 String depName = rel.getDependencies().get(i);
                 g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+
+                storiesExportAdapter.addStory1Relation(name,depName);
+
+                String str = name+"->"+depName+": IN;"+rel.getInCount()+'\n';
+                str = str.replace("::",";;");
+
+
+                }
             }
-        }
+
+
+
 
         // positioning via JGraphX layouts
         mxCircleLayout layout = new mxCircleLayout(jgxAdapter);
         // center the circle
-        int radius = 150;
+        int radius = 20;
         layout.setX0(DEFAULT_SIZE.width - radius);
         layout.setY0(DEFAULT_SIZE.height - radius);
         layout.setRadius(radius);
@@ -184,7 +235,7 @@ public class Graph extends JApplet {
         layout.execute(jgxAdapter.getDefaultParent());
     }
 
-    public void init2() {
+    public void initAllStories() {
         // create a JGraphT graph
         ListenableGraph<String, RelationshipEdge> g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(RelationshipEdge.class));
         // create a visualization using JGraph, via an adapter
@@ -206,6 +257,10 @@ public class Graph extends JApplet {
             String name = rel.getName();
             g.addVertex(name);
         }
+        for (Relationship rel : relationships3) {
+            String name = rel.getName();
+            g.addVertex(name);
+        }
 
         //Add edges
         for (Relationship rel : relationships) {
@@ -216,6 +271,13 @@ public class Graph extends JApplet {
             }
         }
         for (Relationship rel : relationships2) {
+            String name = rel.getName();
+            for (int i = 0; i < rel.getDependencies().size(); i++) {
+                String depName = rel.getDependencies().get(i);
+                g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+            }
+        }
+        for (Relationship rel : relationships3) {
             String name = rel.getName();
             for (int i = 0; i < rel.getDependencies().size(); i++) {
                 String depName = rel.getDependencies().get(i);

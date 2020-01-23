@@ -2,19 +2,57 @@ package files.service;
 
 import Graph.Relationship;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Export {
 	private StringBuilder exportSting;
+	private String filename;
 
-	public void parseExportString(ArrayList<String> vertexNames, ArrayList<Long> vertexNumbers, ArrayList<Relationship> relationships){
-		for (int i = 0; i<vertexNames.size(); i++) {
-			for (int j = 0; j<relationships.size(); j++) {
-				for (int k =0; k<relationships.get(j).getDependencies().size(); k++) {
-					String string = vertexNames.get(i)+" ("+vertexNumbers.get(i)+ ")-->" + relationships.get(j).getDependencies().get(k)+": "+relationships.get(j).getInCount();
-					System.out.println(string);
-				}
-			}
+	Export(){
+		exportSting = new StringBuilder();
+	}
+
+	Export(String filename){
+		this();
+		this.filename=filename;
+	}
+
+	private String escapeColons(String str){
+		return str.replace(":",";");
+	}
+
+	public void addRelation(String participantFrom, String participantTo, String arrowDescription){
+		participantFrom = escapeColons(participantFrom);
+		participantTo = escapeColons(participantTo);
+		arrowDescription = escapeColons(arrowDescription);
+		String str = participantFrom+"->"+participantTo+": "+arrowDescription+'\n';
+		System.out.print(str);
+		exportSting.append(str);
+	}
+
+	public void addRelation(String participantFrom, String participantTo){
+		addRelation(participantFrom,participantTo,"");
+	}
+
+	public void addParticipant(String participantName){
+		participantName = escapeColons(participantName);
+		String str = "participant "+participantName+'\n';		exportSting.append(str);
+	}
+
+	public void setFilename(String filename){
+		this.filename = filename;
+	}
+
+	public void save(){
+		try {
+			BufferedWriter writer =  new BufferedWriter(new FileWriter(filename));
+			writer.write(exportSting.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
