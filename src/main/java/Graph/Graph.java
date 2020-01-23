@@ -62,9 +62,18 @@ public class Graph extends JApplet {
 
 
         for (int i = 0; i < fileName.size(); i++) {
-            vs.add(fileName.get(i) + "\n" + fileSize.get(i).toString());
+
+            var str = fileName.get(i) + "\n";
+
+            if(i < fileSize.size()) {
+                str += fileSize.get(i).toString();
+            }
+
+            vs.add(str);
             is.add("1");
-            relationships.add(relationship.get(i));
+            if(i < relationship.size()) {
+                relationships.add(relationship.get(i));
+            }
         }
 
         //calculate relationships count
@@ -207,7 +216,11 @@ public class Graph extends JApplet {
             String name = rel.getName();
             for (int i = 0; i < rel.getDependencies().size(); i++) {
                 String depName = rel.getDependencies().get(i);
-                g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+                try {
+                    g.addEdge(name, depName, new RelationshipEdge("IN:" + rel.getInCount() + ", OUT: " + rel.getOutCount()));
+                } catch ( Exception e) {
+                    System.out.println("Cannot add link from " + name + " to: " + depName);
+                }
 
                 storiesExportAdapter.addStoryRelation(name,depName, rel.getInCount()+"", rel.getOutCount()+"");
 

@@ -362,26 +362,20 @@ public class RTeam {
         ArrayList<Long> count = new ArrayList<>();
         ArrayList<Relationship> relationships = new ArrayList<>();
 
-        for(var entry :  PackageFile.getMethodFileDependecies(pack).entrySet()) {
-            var method = entry.getKey();
-            var methodName = method.getFullName();
+        for (var dependency : PackageFile.getMethodFileDependecies2(pack).entrySet()) {
 
-            var file = entry.getValue();
-            var fileName = file.getFullName();
-
-            packages.add(fileName);
-            packages.add(methodName);
-            count.add(0l);
+            var packageFile = dependency.getKey();
+            var packageMap = dependency.getValue();
+            packages.add(packageFile.toString());
 
             ArrayList<String> relationshipNames = new ArrayList<>();
-            relationshipNames.add(methodName);
-
-            relationships.add(new Relationship(fileName, relationshipNames));
+            for (var innerPackage : packageMap.entrySet()) {
+                count.add(0l);
+                packages.add(innerPackage.getKey().toString());
+                relationshipNames.add(innerPackage.getKey().toString());
+            }
+            relationships.add(new Relationship(packageFile.toString(), relationshipNames));
         }
-
-        System.out.println(packages);
-        System.out.println(count);
-        System.out.println(relationships);
 
         Graph applet = new Graph(scale);
         applet.importData(packages, count, relationships);
