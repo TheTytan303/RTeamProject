@@ -1,5 +1,6 @@
 package Graph;
 
+import Rteam.RTeam;
 import com.mxgraph.layout.*;
 import com.mxgraph.swing.*;
 import com.mxgraph.view.mxGraphView;
@@ -23,10 +24,13 @@ public class Graph extends JApplet {
     private static final ArrayList<String> vs2 = new ArrayList<String>();
     private static final ArrayList<String> is2 = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships2 = new ArrayList<>();
+
+    public static StoriesExportAdapter storiesExportAdapter;
+
+    private static final Dimension DEFAULT_SIZE = new Dimension(500, 500);
     private static final ArrayList<String> vs3 = new ArrayList<String>();
     private static final ArrayList<String> is3 = new ArrayList<String>();
     private static final ArrayList<Relationship> relationships3 = new ArrayList<>();
-    private static final Dimension DEFAULT_SIZE = new Dimension(100, 100);
     double scale = 1.0;
     private JGraphXAdapter<String, RelationshipEdge> jgxAdapter;
 
@@ -42,8 +46,8 @@ public class Graph extends JApplet {
         panel.add(this);
     }
 
-    public final void draw2(JPanel panel) {
-        this.init2();
+    public final void drawAllStories(JPanel panel) {
+        this.initAllStories();
         panel.add(this);
     }
 
@@ -88,7 +92,7 @@ public class Graph extends JApplet {
         return new ArrayList[]{vs, is, relationships};
     }
 
-    public final ArrayList[] importData2(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship, ArrayList<String> fileName2, ArrayList<Long> fileSize2, ArrayList<Relationship> relationship2,
+    public final ArrayList[] importDataAllStories(ArrayList<String> fileName, ArrayList<Long> fileSize, ArrayList<Relationship> relationship, ArrayList<String> fileName2, ArrayList<Long> fileSize2, ArrayList<Relationship> relationship2,
                                          ArrayList<String> packages, ArrayList<Long> count, ArrayList<Relationship> relationship3) throws IllegalArgumentException {
        if (fileName.isEmpty() || fileSize.isEmpty() || relationship.isEmpty() || fileName2.isEmpty() || fileSize2.isEmpty() || relationship2.isEmpty()||packages.isEmpty()||count.isEmpty()||relationship3.isEmpty()) {
             throw new IllegalArgumentException("No files to load");
@@ -189,8 +193,8 @@ public class Graph extends JApplet {
         getContentPane().add(component);
         resize(DEFAULT_SIZE);
 
-        StoriesExportAdapter storiesExportAdapter = new StoriesExportAdapter();
-        storiesExportAdapter.getExport().setFilename("test1.txt");
+        storiesExportAdapter = new StoriesExportAdapter();
+
 
         //add vertices
         for (Relationship rel : relationships) {
@@ -214,7 +218,7 @@ public class Graph extends JApplet {
                 }
             }
 
-        storiesExportAdapter.getExport().save();
+
 
 
         // positioning via JGraphX layouts
@@ -231,7 +235,7 @@ public class Graph extends JApplet {
         layout.execute(jgxAdapter.getDefaultParent());
     }
 
-    public void init2() {
+    public void initAllStories() {
         // create a JGraphT graph
         ListenableGraph<String, RelationshipEdge> g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(RelationshipEdge.class));
         // create a visualization using JGraph, via an adapter

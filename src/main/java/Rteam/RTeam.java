@@ -312,8 +312,8 @@ public class RTeam {
         }
         Graph applet = new Graph(scale);
         System.out.println();
-        applet.importData2(fileName, fileSize, relationships, methodName2, methodCallCount2, relationships2, packages3, count3, relationships3);
-        applet.draw2(panel);
+        applet.importDataAllStories(fileName, fileSize, relationships, methodName2, methodCallCount2, relationships2, packages3, count3, relationships3);
+        applet.drawAllStories(panel);
     }
 
 
